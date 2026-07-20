@@ -1,0 +1,399 @@
+{
+  "agent": {
+    "name": "Embedded Project Idea Scoping Agent",
+    "version": "2.2",
+    "context": "Embedded Engineering and Gen AI Summer School for third-year Computer Science students",
+    "purpose": "Convert a vague embedded project idea into a structured scoping brief for requirements engineering"
+  },
+  "source_input": {
+    "original_project_idea": "The project represents a Mechanised Bunny that can have conversations with a human. It can follow the user while talking to him. The bunny also can mimic expressions based on mood regarding the subject. The bunny needs to talk through an API to get the answers and the mood that I mentioned. The hardware set in stone is using a FRDM-MCXA153 and an ESP32 suite (for WiFi purposes).",
+    "input_quality": "partially_clear"
+  },
+  "fixed_platform": {
+    "board": "NXP FRDM-MCXA153",
+    "mcu": "NXP MCXA153",
+    "status": "mandatory user constraint",
+    "pin_policy": "Use generic capabilities unless exact pins are provided",
+    "logic_level_policy": "Assume 3.3 V logic unless verified otherwise"
+  },
+  "project": {
+    "name": "Mecha-Iepurele (Mechanized Bunny)",
+    "short_summary": "An interactive, moving mechanized bunny robot that communicates with a human via an AI API (via ESP32 WiFi) and mimics emotional expressions using physical movement and displays.",
+    "main_objective": "Build a robotic companion that uses a FRDM-MCXA153 for local sensor-motor control and expressions, and an ESP32 for WiFi connection to a conversational AI API that provides responses and mood data.",
+    "intended_user": "third-year Computer Science student",
+    "operating_environment": "Indoor flat surfaces (classroom, table, or smooth floor) with active WiFi connectivity.",
+    "main_behavior": "The bunny listens to user input (text or audio), sends it to a cloud API using the ESP32, receives the text reply and a mood classification, plays back/displays the reply, changes facial/physical expression (ears, face screen) to match the mood, and tracks/follows the user using distance or vision sensors.",
+    "inputs": [
+      "User voice commands or serial text input",
+      "Ultrasonic or infrared distance sensors (for tracking user distance/position)",
+      "Wi-Fi connection to Cloud LLM/NLP API (via ESP32)",
+      "Physical buttons (for triggering conversation, resetting, or overriding states)"
+    ],
+    "outputs": [
+      "Servo motors (for moving bunny ears)",
+      "DC gear motors (for differential drive movement to follow the user)",
+      "I2C OLED or SPI TFT display (for facial expressions/status)",
+      "Audio output (Speaker/Buzzer/MP3 trigger for vocal response)",
+      "Status LEDs"
+    ],
+    "interaction_flow": [
+      "User initiates interaction by pressing a button or speaking a wake word",
+      "System captures query (via serial/webapp/mic) and sends it from FRDM-MCXA153 to ESP32 over UART",
+      "ESP32 sends the request to the Conversational AI API over WiFi",
+      "API returns response text and a mood tag (e.g. happy, sad, angry)",
+      "ESP32 passes the response back to FRDM-MCXA153 via UART",
+      "FRDM-MCXA153 displays the text on the OLED screen and updates servo-based ear positions and facial expressions according to the mood tag",
+      "Simultaneously, the motor control loop reads distance sensors to locate the user and drives the wheels to follow/maintain distance to the user while talking"
+    ],
+    "out_of_scope": [
+      "On-board execution of heavy Large Language Models (LLMs) or complex speech-to-text",
+      "High-speed navigation on rough terrain or stairs",
+      "Complex collision avoidance for dynamic obstacles other than the tracked user",
+      "Custom cloud backend hosting (standard pre-existing AI API endpoints are assumed)"
+    ]
+  },
+  "problem_space": {
+    "purpose": "Creating an engaging, interactive physical robotic companion that bridges local micro-controller hardware (sensors, motor controls, displays) with cloud-based artificial intelligence.",
+    "physical_process_monitored_or_controlled": "Robot movement (following user based on distance sensors) and physical expression control (servo-based ear movement and display updates).",
+    "success_criteria": [
+      "Successful UART communication between FRDM-MCXA153 and ESP32",
+      "ESP32 successfully connects to Wi-Fi and queries the LLM API to get JSON responses containing reply text and mood tags",
+      "FRDM-MCXA153 parses JSON and renders corresponding face expressions (on screen) and physical animations (via servos)",
+      "Bunny maintains a predefined distance (e.g. 30-50 cm) from the user and moves toward/away as the user moves"
+    ],
+    "known_constraints": [
+      "FRDM-MCXA153 must be the main microcontroller",
+      "ESP32 must be used for Wi-Fi communication",
+      "Communication with API is required to obtain answers and mood tags",
+      "Logic levels are 3.3V; motor driver and servos require external power supply"
+    ],
+    "unknown_constraints": [
+      "Specific API format, authentication, and endpoint requirements",
+      "Maximum size/weight of the bunny chassis (affecting motor selection and power requirements)",
+      "Whether voice audio is captured locally on the device or text input is provided via a phone/web app"
+    ]
+  },
+  "project_ambition": {
+    "core_student_version": {
+      "description": "A static (non-moving) desktop bunny companion with screen-based expressions and UART-Wi-Fi communication.",
+      "expected_difficulty": "intermediate",
+      "expected_features": [
+        "FRDM-MCXA153 connected to ESP32 via UART",
+        "ESP32 connects to Wi-Fi and queries a mock or simple LLM API using HTTP GET/POST",
+        "User sends text queries to the bunny via serial terminal / PC console",
+        "FRDM-MCXA153 receives the response and mood, displaying them on an I2C OLED display (using text and simple static bitmaps for emotions)"
+      ],
+      "why_it_is_suitable": "Focuses on the core firmware concepts: serial communication (UART), display driving (I2C), and API interfacing (JSON parsing, HTTP) without the mechanical, power, and control-loop challenges of robotics."
+    },
+    "recommended_summer_school_version": {
+      "description": "An interactive, moving bunny robot that tracks/follows the user and wiggles its ears to mimic expressions based on the conversation's mood.",
+      "expected_difficulty": "advanced",
+      "expected_features": [
+        "All features of the Core version",
+        "Mobile chassis with differential drive (two DC gear motors with a motor driver)",
+        "Ultrasonic distance sensors to track user distance and drive motors to follow the user at a set distance",
+        "Servo motors driven by PWM on the FRDM-MCXA153 to move physical ears (e.g., perked, drooping, wiggling)",
+        "OLED display with animated pixel-art eyes/mouth representing different moods (happy, sad, surprised, neutral)",
+        "A simple web interface hosted on the ESP32 that allows the user to type text on their smartphone and send it to the bunny"
+      ],
+      "why_it_is_interesting": "Provides a tangible, interactive robot demonstration that combines web communication, digital/analog sensor reading, actuator control, and simple control loops (proportional distance control).",
+      "why_it_is_still_feasible": "Uses simple, cheap hobbyist components (SG90 servos, TT motors, HC-SR04 sensors) with standard protocols (PWM, GPIO, UART, HTTP) and moves the user interaction to a smartphone web interface, avoiding local voice capture/processing."
+    },
+    "advanced_extension": {
+      "description": "A fully voice-controlled, camera-tracking companion bunny with local keyword spotting and speech synthesis.",
+      "expected_difficulty": "advanced",
+      "advanced_features": [
+        "All features of the Recommended version",
+        "On-board voice recording using a MEMS microphone (I2S) connected to the FRDM-MCXA153 or ESP32",
+        "Audio streaming to a speech-to-text API, which is then fed to the LLM, and TTS output is streamed back",
+        "Voice playback using an I2S DAC (e.g. MAX98357A) and speaker",
+        "Computer vision-based user tracking using an ESP32-CAM or HuskyLens (sending bounding box coordinates over UART/I2C to track and follow the user's face, not just distance)",
+        "Local keyword spotting (e.g., wake word detection) running on the FRDM-MCXA153 using eIQ/TinyML to minimize API calls"
+      ],
+      "extra_components": [
+        "I2S MEMS Microphone (e.g., INMP441)",
+        "I2S Audio DAC + Speaker (e.g., MAX98357A)",
+        "ESP32-CAM module or HuskyLens vision sensor",
+        "Dual-cell LiPo battery pack with 5V and 3.3V step-down/step-up power regulators"
+      ],
+      "technical_challenges": [
+        "Real-time I2S audio processing, buffering, and Wi-Fi streaming",
+        "Power distribution: isolation between noisy motor circuits and sensitive audio/microcontroller circuits",
+        "Integrating camera face tracking with motor steering control loops",
+        "Limited RAM on MCXA153 for holding audio buffers and running TinyML models"
+      ],
+      "risk_controls": [
+        "Separate battery or separate opto-isolated voltage regulator for the DC motors",
+        "Implement a local testing mode that works over a serial terminal if Wi-Fi or API calls fail",
+        "Keep voice recognition and voice synthesis on the API side to save local RAM and CPU cycles",
+        "Use a dedicated hardware vision sensor (like HuskyLens) to offload image processing"
+      ],
+      "can_be_optional": true
+    }
+  },
+  "target_hardware": {
+    "main_board": {
+      "name": "NXP FRDM-MCXA153",
+      "mcu": "NXP MCXA153",
+      "reasoning": "Mandatory board for all summer school projects",
+      "approval_status": "user_provided"
+    },
+    "sensors": [
+      {
+        "name": "Ultrasonic Distance Sensor (e.g., RCWL-1601 or HC-SR04P)",
+        "purpose": "Measures distance to the user in front of the bunny to guide following movement",
+        "likely_interface": "GPIO (Trigger and Echo pins) or I2C",
+        "used_in_version": "recommended",
+        "voltage_or_signal_notes": "Use 3.3V-compatible models like RCWL-1601. If using standard 5V HC-SR04, a resistor voltage divider is required on the Echo pin to protect the 3.3V MCU inputs.",
+        "risks": [
+          "Noisy distance readings causing jittery movement",
+          "5V logic incompatibility on standard HC-SR04"
+        ]
+      },
+      {
+        "name": "MEMS Microphone (e.g., INMP441)",
+        "purpose": "Captures user's voice for direct speech interaction",
+        "likely_interface": "I2S",
+        "used_in_version": "advanced",
+        "voltage_or_signal_notes": "Runs on 3.3V. Requires DMA configuring on the MCU to handle continuous audio stream.",
+        "risks": [
+          "High data rate and audio buffer management",
+          "Ambient noise interfering with speech recognition"
+        ]
+      },
+      {
+        "name": "HuskyLens or ESP32-CAM",
+        "purpose": "Enables face tracking or color tracking to follow the user accurately",
+        "likely_interface": "UART or I2C",
+        "used_in_version": "advanced",
+        "voltage_or_signal_notes": "ESP32-CAM or HuskyLens requires 5V power but communication pins are 3.3V tolerant. UART interface to the FRDM-MCXA153.",
+        "risks": [
+          "High power consumption",
+          "Latency in coordinate updates leading to motor steering delay"
+        ]
+      }
+    ],
+    "actuators_outputs": [
+      {
+        "name": "DC Gear Motors (TT Motors)",
+        "purpose": "Drive the wheels for bunny movement",
+        "likely_interface": "PWM-capable pins (for speed control) + GPIO (for direction)",
+        "used_in_version": "recommended",
+        "voltage_or_power_notes": "Requires external battery power (e.g., 6V) and a H-bridge motor driver (e.g., TB6612FNG). Motors cannot be powered directly from MCU pins.",
+        "risks": [
+          "Power spikes and inductive noise resetting the MCU",
+          "High current drain shorting USB power if not wired properly"
+        ]
+      },
+      {
+        "name": "H-bridge Motor Driver (e.g., TB6612FNG)",
+        "purpose": "Controls speed and direction of DC motors based on PWM and GPIO signals from MCU",
+        "likely_interface": "PWM (2 pins) + GPIO (4 pins)",
+        "used_in_version": "recommended",
+        "voltage_or_power_notes": "Logic voltage 3.3V, Motor voltage 5-12V from external battery.",
+        "risks": [
+          "Incorrect wiring can damage MCU if motor power leaks into logic lines"
+        ]
+      },
+      {
+        "name": "Micro Servo Motors (e.g., SG90)",
+        "purpose": "Actuates the physical ears of the bunny to mimic emotions",
+        "likely_interface": "PWM-capable pins",
+        "used_in_version": "recommended",
+        "voltage_or_power_notes": "Servos require 5V power (typically from external regulator) but can accept 3.3V PWM control signals.",
+        "risks": [
+          "Servo stall current can cause voltage dips and reset the MCU"
+        ]
+      },
+      {
+        "name": "I2S DAC + Amplifier (e.g., MAX98357A) and Speaker",
+        "purpose": "Plays back the synthesized speech voice response from the API",
+        "likely_interface": "I2S",
+        "used_in_version": "advanced",
+        "voltage_or_power_notes": "Can run on 3.3V or 5V (for higher volume). Communicates via I2S.",
+        "risks": [
+          "Audio noise from power line ripples",
+          "High current draw during loud playback"
+        ]
+      }
+    ],
+    "user_inputs": [
+      {
+        "name": "Tactile Buttons",
+        "purpose": "User trigger to start/stop listening or skip responses",
+        "likely_interface": "GPIO-capable pin with internal pull-up resistor",
+        "used_in_version": "core",
+        "notes": "Debouncing needs to be handled in software or hardware (RC filter)."
+      }
+    ],
+    "display_ui": [
+      {
+        "name": "OLED Display (e.g., SSD1306 128x64)",
+        "purpose": "Displays conversational text and pixel-art facial expressions based on mood",
+        "likely_interface": "I2C-capable pins (SDA, SCL)",
+        "used_in_version": "core",
+        "notes": "Runs on 3.3V. Standard graphics libraries (like U8g2 or MCUX SDK I2C display drivers) are needed."
+      }
+    ],
+    "communication_debug": [
+      {
+        "name": "ESP32 Wi-Fi Module (e.g., ESP-WROOM-32 or ESP32-S3)",
+        "purpose": "Performs Wi-Fi networking and queries the API",
+        "likely_interface": "UART-capable pins (TX, RX)",
+        "used_in_version": "core",
+        "notes": "ESP32 runs on 3.3V. UART link communicates at 115200 bps. Can use AT commands (Espressif AT firmware) or a custom firmware written for the ESP32 that handles the API requests and returns clean JSON."
+      },
+      {
+        "name": "USB-UART Debug Port",
+        "purpose": "Debugging output and console control via PC terminal",
+        "likely_interface": "On-board USB-UART debugger (Link2 or equivalent)",
+        "used_in_version": "core",
+        "notes": "Connects to PC. Provides print statements and command console."
+      }
+    ],
+    "power_source": {
+      "recommended_power": "Dual-power setup: USB power for MCU logic during desktop development, and 4x AA batteries or 2S LiPo battery with regulators for mobile robot operation.",
+      "notes": "A step-down regulator (e.g., LM2596 or buck converter) is recommended to step down battery voltage to 5V for servos/motor driver, while the FRDM-MCXA153 is powered via its USB-C port or 3.3V/5V pin (via internal LDO).",
+      "risks": [
+        "Ground loops and electrical noise from motors resetting the MCU",
+        "Over-discharging LiPo battery if battery level is not monitored"
+      ]
+    },
+    "optional_advanced_components": [
+      {
+        "name": "LiPo Battery Charger & Fuel Gauge",
+        "purpose": "Allows on-board USB charging and monitoring of battery percentage",
+        "reason_to_include": "Makes the robot truly wireless and practical as a companion",
+        "reason_to_exclude": "Adds circuitry and firmware complexity to read battery status via ADC/I2C",
+        "risks": [
+          "LiPo safety handling and charging risks"
+        ]
+      }
+    ]
+  },
+  "software_context": {
+    "recommended_development_environment": "MCUXpresso VS Code Edition or MCUXpresso IDE",
+    "recommended_sdk_or_libraries": [
+      "MCUXpresso SDK for MCXA153",
+      "fsl_lpuart (for UART communications)",
+      "fsl_i2c / fsl_dspi (for OLED and sensors)",
+      "fsl_tpm / fsl_ftm (for PWM motor/servo control)",
+      "SDK I2S driver (for advanced audio output)"
+    ],
+    "programming_language": "C",
+    "existing_codebase": "new_project",
+    "suggested_starting_point": "Start with the 'lpuart_polling' or 'lpuart_interrupt' SDK example on FRDM-MCXA153 to establish solid communication with the ESP32, and the 'pin_mux' tool to define peripheral routes.",
+    "debugging_interfaces": [
+      "SWD (Serial Wire Debug) via on-board Link2 debugger",
+      "UART serial logging"
+    ],
+    "possible_gen_ai_usage": [
+      "requirements drafting",
+      "test case generation",
+      "code review",
+      "debugging support",
+      "documentation generation"
+    ]
+  },
+  "constraints": {
+    "target_board": "NXP FRDM-MCXA153 is mandatory",
+    "voltage": "Assume 3.3 V logic unless verified otherwise",
+    "power": "Motors and servos must not be powered directly from the MCU pins or MCU board 3.3V/5V LDO output. An external power source with common ground is required.",
+    "timing": "Control loop for user following must run at regular intervals (e.g., 20-50ms) to ensure smooth tracking without blocking UART communication.",
+    "memory": "MCXA153 has 32KB SRAM. Memory footprint must be kept low; large audio buffers or image data must be processed on the ESP32 or cloud.",
+    "safety": "Ensure motor control code fails safe (stops motors if sensor reads out-of-range or communication is lost). Ensure battery protection.",
+    "privacy_security": "Wi-Fi credentials should not be hardcoded in public repositories; use a config header or runtime configuration.",
+    "student_level": "third-year university Computer Science students"
+  },
+  "complexity": {
+    "core_level": "intermediate",
+    "recommended_level": "advanced",
+    "advanced_level": "advanced",
+    "student_suitability": "suitable_with_simplification",
+    "reason": "The combination of robotics (motor control, PWM, analog/digital sensors) and networking (ESP32, API, UART, JSON parsing) can be overwhelming if attempted all at once. By structuring the core version as a static desktop helper, students can learn UART, I2C, and API integration first, then move to recommended or advanced motor control and servos as a secondary step."
+  },
+  "facts_provided_by_user": [
+    "The project represents a Mechanised Bunny that can have conversations with a human.",
+    "It can follow the user while talking to him.",
+    "The bunny mimics expressions based on mood regarding the subject.",
+    "The bunny needs to talk through an API to get the answers and the mood.",
+    "The hardware is fixed: FRDM-MCXA153 and an ESP32 suite (for WiFi purposes)."
+  ],
+  "assumptions": [
+    {
+      "id": "A-001",
+      "assumption": "The user will talk to the bunny using a web application or phone app that handles voice-to-text, or by typing text, which then communicates with the ESP32 via a local web page. (For Recommended version)",
+      "reason": "Capturing, buffering, and uploading audio directly from the FRDM-MCXA153 is complex due to memory constraints (32KB SRAM) and lack of direct audio hardware on the board.",
+      "requires_human_approval": true
+    },
+    {
+      "id": "A-002",
+      "assumption": "The external API is a standard HTTP REST API that accepts a text query and returns a JSON response containing 'reply' (string) and 'mood' (string, e.g., 'happy', 'sad', 'neutral').",
+      "reason": "Parsing complex structures or streaming text (like SSE) on a microcontroller is resource-intensive; a simple JSON response is easy to parse with jsmn or simple string manipulation.",
+      "requires_human_approval": true
+    },
+    {
+      "id": "A-003",
+      "assumption": "The ESP32 module will run a custom firmware (written in Arduino or ESP-IDF) that handles Wi-Fi connections, SSL/TLS handshakes, and HTTP client requests, passing raw or simplified text data to the FRDM-MCXA153 via UART.",
+      "reason": "Using AT commands for HTTPS requests with JSON payloads is difficult and unreliable on microcontrollers; a custom ESP32 firmware makes the UART protocol much simpler for the MCXA153.",
+      "requires_human_approval": true
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-001",
+      "question": "How will the user physically talk to the bunny? Is it voice-activated with a microphone on the bunny, or via a web/phone interface that connects to the ESP32?",
+      "why_it_matters": "Determines if I2S MEMS microphones, DACs, and audio routing circuitry are required on the hardware, which increases complexity significantly."
+    },
+    {
+      "id": "Q-002",
+      "question": "What kind of sensors are preferred for user following? (e.g., Simple ultrasonic/IR sensors, or camera-based face/color tracking?)",
+      "why_it_matters": "Ultrasonic sensors are cheap and easy to code but only detect proximity; camera-based systems (like HuskyLens or ESP32-CAM) can track a specific user but add cost and interface complexity."
+    },
+    {
+      "id": "Q-003",
+      "question": "What mechanisms will be used for expressions? (e.g., Screen-only, servo-driven ears, or a combination?)",
+      "why_it_matters": "Affects the physical design, mechanical CAD models, and the number of PWM/servo channels and power requirements."
+    }
+  ],
+  "risks": {
+    "technical": [
+      "Inability to handle SSL/TLS handshakes directly on the ESP32 if API endpoints use complex authentication or modern certificates, causing connection failures.",
+      "Parsing failures or buffer overflows on FRDM-MCXA153 if the API response is unexpectedly large."
+    ],
+    "safety": [
+      "DC motors driving without constraint if the distance sensor fails, causing the bunny to collide with objects or fall off a table.",
+      "LiPo battery short circuit or thermal runaway if proper charging and power distribution circuitry is not implemented."
+    ],
+    "voltage_power": [
+      "MCU resets (brownouts) when DC motors start or servos move due to current draw spikes on a shared power supply.",
+      "Damage to the FRDM-MCXA153 if 5V signals from the motor driver, servos, or ultrasonic sensor are connected directly to 3.3V GPIOs."
+    ],
+    "timing": [
+      "Blockages in the main loop while waiting for ESP32 UART responses, causing the motor control loop to stall and the bunny to crash."
+    ],
+    "memory": [
+      "Running out of RAM (32KB limit on MCXA153) if attempting to buffer audio or parse large JSON payloads."
+    ],
+    "privacy_security": [
+      "Exposing Wi-Fi credentials or API keys if they are stored in plain text in the firmware source code.",
+      "Unencrypted transmission of conversation audio or text over local Wi-Fi."
+    ],
+    "advanced_feature_risks": [
+      "High complexity of implementing local wake-word detection (TinyML) on the MCXA153, which might exceed the memory and processing limits of the MCU."
+    ]
+  },
+  "human_approval_required": [
+    "A-001 (Web/Phone interface for user query instead of on-board speech-to-text)",
+    "A-002 (API response format as a simple JSON object containing text and mood)",
+    "A-003 (Custom ESP32 firmware to manage Wi-Fi and HTTPS, rather than AT commands)"
+  ],
+  "handoff_to_requirements_agent": {
+    "ready_for_requirements_engineering": true,
+    "recommended_scope_for_requirements": "recommended",
+    "readiness_status": "ready_with_assumptions",
+    "readiness_notes": "The project is well-scoped with clear delineations between core, recommended, and advanced tiers. Proceeding with requirements engineering is highly recommended under the assumption that the recommended version will be developed (featuring a mobile robot with ultrasonic tracking, servo ears, OLED face, and a smartphone web page input via ESP32).",
+    "critical_missing_information": [],
+    "recommended_next_agent": "Requirements Engineering Assistant Agent"
+  }
+}

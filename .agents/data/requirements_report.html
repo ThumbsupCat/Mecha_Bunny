@@ -1,0 +1,2413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System Specification &amp; Requirements - Mecha-Iepurele (Mechanized Bunny)</title>
+  <style>
+    /* Modern Premium Dark Theme for Engineering Review */
+    :root {
+      --bg: #090d16;
+      --bg-darker: #05080e;
+      --panel: rgba(17, 24, 39, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.4);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      
+      --cyan: #06b6d4;
+      --indigo: #6366f1;
+      --purple: #8b5cf6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #ef4444;
+      
+      --gradient-accent: linear-gradient(135deg, var(--cyan), var(--indigo));
+      
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * {
+      box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.15) transparent;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Navigation Sidebar */
+    aside {
+      width: 320px;
+      background-color: var(--bg-darker);
+      border-right: 1px solid var(--border);
+      padding: 30px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+    
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .logo-title {
+      font-size: 20px;
+      font-weight: 800;
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo-subtitle {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+    }
+    
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .nav-item a {
+      display: block;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: var(--transition);
+      border: 1px solid transparent;
+    }
+    
+    .nav-item a:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      border-color: var(--border);
+    }
+    
+    .nav-item.active a {
+      background: rgba(99, 102, 241, 0.1);
+      color: #818cf8;
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Main Content Area */
+    main {
+      flex: 1;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    /* Header Area */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    /* Typography */
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin: 0;
+      line-height: 1.2;
+    }
+    
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-top: 48px;
+      margin-bottom: 20px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    
+    h2::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: var(--gradient-accent);
+      border-radius: 2px;
+    }
+    
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-top: 28px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    p {
+      color: var(--text-muted);
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 14.5px;
+    }
+    
+    ul, ol {
+      color: var(--text-muted);
+      padding-left: 20px;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      font-size: 14.5px;
+    }
+    
+    li {
+      margin-bottom: 6px;
+    }
+    
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+    
+    .badge-status {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.3);
+      font-size: 12px;
+      padding: 6px 14px;
+    }
+    
+    .badge-core {
+      background: rgba(16, 185, 129, 0.1);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    
+    .badge-recommended {
+      background: rgba(59, 130, 246, 0.1);
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, 0.25);
+    }
+    
+    .badge-advanced {
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    
+    .badge-must {
+      background: rgba(239, 68, 68, 0.1);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    
+    .badge-should {
+      background: rgba(245, 158, 11, 0.1);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    
+    .badge-could {
+      background: rgba(107, 114, 128, 0.1);
+      color: #d1d5db;
+      border-color: rgba(107, 114, 128, 0.25);
+    }
+    
+    /* Panel / Card */
+    .panel {
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: var(--transition);
+    }
+    
+    .panel:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Grid Utilities */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    
+    /* Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 24px;
+      background: rgba(10, 15, 26, 0.5);
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+    
+    td {
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:hover td {
+      color: var(--text);
+      background-color: rgba(255, 255, 255, 0.015);
+    }
+    
+    /* Checklist */
+    .checkbox-custom {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.02);
+      transition: var(--transition);
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    
+    .checkbox-custom:checked {
+      background: var(--gradient-accent);
+      border-color: transparent;
+    }
+    
+    .checkbox-custom:checked::after {
+      content: "✓";
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14.5px;
+      color: var(--text-muted);
+    }
+    
+    /* Code blocks and disclaimers */
+    code {
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #f43f5e;
+    }
+    
+    .disclaimer-box {
+      border-left: 4px solid var(--amber);
+      background: rgba(245, 158, 11, 0.05);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 16px;
+    }
+    
+    .disclaimer-title {
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 4px;
+      font-size: 13.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .disclaimer-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    /* Details Cards */
+    .details-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .details-card h4 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #fff;
+      font-size: 14.5px;
+    }
+    
+    /* Responsive styling */
+    @media (max-width: 1024px) {
+      .container {
+        flex-direction: column;
+      }
+      aside {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        position: static;
+        padding: 20px;
+      }
+      main {
+        padding: 20px;
+      }
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Print override */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+        font-size: 12px;
+        background-image: none;
+      }
+      .container {
+        display: block;
+      }
+      aside {
+        display: none;
+      }
+      main {
+        padding: 0;
+        max-width: 100%;
+      }
+      .panel {
+        background: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+        box-shadow: none;
+      }
+      h2::before {
+        display: none;
+      }
+      table, th, td {
+        border: 1px solid #ddd !important;
+        color: #000 !important;
+      }
+      th {
+        background-color: #f5f5f5 !important;
+      }
+      .badge {
+        border: 1px solid #aaa !important;
+        color: #000 !important;
+        background: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Navigation Sidebar -->
+  <aside>
+    <div class="logo-area">
+      <div class="logo-title">Mecha-Iepurele</div>
+      <div class="logo-subtitle">Embedded Spec v1.0</div>
+    </div>
+    
+    <ul class="nav-list">
+      <li class="nav-item"><a href="#resume">0. Project Resume</a></li>
+      <li class="nav-item"><a href="#scoping">1. Input &amp; Scope</a></li>
+      <li class="nav-item"><a href="#tiers">2. Feature Tiers</a></li>
+      <li class="nav-item"><a href="#scenarios">3. Scenarios &amp; Stories</a></li>
+      <li class="nav-item"><a href="#functional">4. Functional Req.</a></li>
+      <li class="nav-item"><a href="#nonfunctional">5. Non-Functional Req.</a></li>
+      <li class="nav-item"><a href="#hardware">6. Hardware Description</a></li>
+      <li class="nav-item"><a href="#pins">7. Pin Allocation</a></li>
+      <li class="nav-item"><a href="#firmware">8. Firmware Architecture</a></li>
+      <li class="nav-item"><a href="#tests">9. Test Cases</a></li>
+      <li class="nav-item"><a href="#traceability">10. Traceability Matrix</a></li>
+      <li class="nav-item"><a href="#risks">11. Risk Register</a></li>
+      <li class="nav-item"><a href="#review">12. Review Checklist</a></li>
+      <li class="nav-item"><a href="#bom">13. Bill of Materials (BOM)</a></li>
+      <li class="nav-item"><a href="#status">14. Final Status</a></li>
+    </ul>
+    
+    <div style="margin-top:auto; font-size: 11px; color: var(--text-dim);">
+      Generative Draft<br>
+      Local time: 2026-07-10<br>
+      AI Assists. Humans Decide.
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <header>
+      <div class="header-top">
+        <h1>Requirements &amp; Specification Package</h1>
+        <span class="badge badge-status">Ready for Human Review</span>
+      </div>
+      <p style="margin-bottom: 0;">
+        <strong>Project:</strong> Mecha-Iepurele (Mechanized Bunny) Robotic Companion (TTS Direct-Drive Edition)<br>
+        <strong>Target Board:</strong> NXP FRDM-MCXA153 (NXP MCXA153 MCU)<br>
+        <strong>Context:</strong> University Computer Science Embedded Engineering &amp; GenAI Summer School (Third-Year Students)
+      </p>
+    </header>
+
+    <!-- SECTION 0: PROJECT RESUME -->
+    <section id="project-resume" class="panel">
+      <h2>0. Project Resume</h2>
+      <p style="font-size: 15px; color: var(--text); line-height: 1.7;">
+        The <strong>Mecha-Iepurele</strong> is an interactive robotic companion designed for indoor environments. It engages in natural conversations via a cloud AI API and physically tracks the user. The project features a dual-processor architecture, specialized mechanical hopping linkages, active steering controls, electrical isolation safety, and strict multi-user privacy protections.
+      </p>
+      
+      <div class="grid-3" style="margin-top: 20px;">
+        <div class="details-card" style="margin-bottom: 0;">
+          <h4 style="color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 6px;">Processing Core</h4>
+          <ul style="font-size: 12.5px; padding-left: 16px; margin: 0; line-height: 1.5;">
+            <li><strong>MCXA153 Controller:</strong> Superloop processor. Handles ultrasonic tracking, PWM drives for 4x servos and 1x H-bridge, battery monitoring, and watchdog tasks.</li>
+            <li><strong>ESP32-S3 Coprocessor:</strong> Handles Wi-Fi connection, HTTPS API calls, JSON parsing, direct I2S audio rendering (MAX98357A), and NVS wiping.</li>
+            <li><strong>UART ACK Check:</strong> Software confirmation protocol ensures reliable command transmission between boards.</li>
+          </ul>
+        </div>
+        
+        <div class="details-card" style="margin-bottom: 0;">
+          <h4 style="color: var(--indigo); border-bottom: 1px solid var(--border); padding-bottom: 6px;">Locomotion &amp; Shell</h4>
+          <ul style="font-size: 12.5px; padding-left: 16px; margin: 0; line-height: 1.5;">
+            <li><strong>90-Degree Kick Hopping:</strong> 1x central DC motor rotates a shared axle driving jointed leg linkages. When legs pivot to 90-degrees, they execute a gentle downward push to hop the chassis.</li>
+            <li><strong>Active Steering:</strong> 1x SG90 steering servo pivots a rear tail-skid assembly left/right for turning.</li>
+            <li><strong>Spacious Shell &amp; Vents:</strong> PLA body shell (~180x120x120 mm) with ventilation grilles and magnetic latches. Sourced from pre-designed templates (no custom CAD modeling required).</li>
+          </ul>
+        </div>
+        
+        <div class="details-card" style="margin-bottom: 0;">
+          <h4 style="color: var(--purple); border-bottom: 1px solid var(--border); padding-bottom: 6px;">Power &amp; Privacy</h4>
+          <ul style="font-size: 12.5px; padding-left: 16px; margin: 0; line-height: 1.5;">
+            <li><strong>Electrical Safety:</strong> 2S LiPo battery with separate digital/motor regulators and a 2S BMS protection board.</li>
+            <li><strong>Onboard Charger:</strong> 2S balance charger connected to a shell-mounted USB-C port.</li>
+            <li><strong>Privacy Shield:</strong> Wipes credentials from NVS (10-second button hold), zero-fills conversation RAM post-speech, and uses TLS encryption with isolated UUIDs.</li>
+            <li><strong>Organic Gestures:</strong> Zero status LEDs; eyelid open/close and ear sweeps express states.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1 -->
+    <section id="scoping" class="panel">
+      <h2>1. Input Interpretation and Selected Scope</h2>
+      <p>
+        The requirements and design choices detailed in this document are derived from the <strong>Agent 0 Scoping Brief</strong>, updated to incorporate the user's specific planning constraints. 
+        The target application is an interactive companion bunny featuring <strong>Text-to-Speech (TTS) voice output</strong> and local mechanical actuator control run by the NXP MCU, 
+        and high-level Wi-Fi connection, direct audio parsing, and JSON API resolution handled by the ESP32-S3 Nano.
+      </p>
+      
+      <div class="grid-2" style="margin-bottom: 24px;">
+        <div class="details-card">
+          <h4>Scope Parameters</h4>
+          <p style="font-size: 13px; margin-bottom: 8px;"><strong>Selected Feature Tier:</strong> Recommended Summer School Version</p>
+          <p style="font-size: 13px; margin-bottom: 8px;"><strong>Intended User:</strong> Third-Year University CS Students</p>
+          <p style="font-size: 13px; margin-bottom: 8px;"><strong>Operating Environment:</strong> Portable indoor environments requiring multi-user privacy protections and organic physical status feedback</p>
+          <p style="font-size: 13px; margin-bottom: 0;"><strong>Movement Style:</strong> Hopping mechanism mimicking a real bunny (driven by a single synchronized double-crank linkage) with active steering control and gentle, low-amplitude 90-degree rotary leg kicks</p>
+        </div>
+        <div class="details-card">
+          <h4>Refined Exclusions &amp; Scoping Changes</h4>
+          <ul style="font-size: 13px; margin: 0; padding-left: 16px;">
+            <li><strong>Audio Parsing:</strong> Handled entirely on the ESP32-S3 Nano. Audio is non-transferable; no raw PCM streams are sent to the MCXA153, bypassing all MCU audio overhead.</li>
+            <li><strong>Chassis &amp; Jointed Leg Linkages:</strong> Driven by 1x central DC TT gear motor rotating a shared double-crank axle. Converts rotational motion to cyclic hopping. When the legs pivot through a 90-degree vertical position relative to the chassis, they execute a gentle downward push to lift the body slightly into a stable forward hop/scoot. Links are printed in tough PETG to handle impact fatigue. No sliding pistons or internal compression springs are used.</li>
+            <li><strong>Bunny Shell &amp; Battery Charging:</strong> Integrates a spacious body shell to accommodate the high density of internal components, featuring ventilation grilles, quick-release magnetic latches, and an onboard USB-C balance charger.</li>
+            <li><strong>Steering System:</strong> To enable turns while preserving left/right leg phase lock (preventing tipping), the chassis incorporates a steerable rear tail-skid or caster assembly driven by a dedicated micro servo (SG90).</li>
+            <li><strong>Status Indicators (No LEDs):</strong> Status LEDs are completely excluded. Wakefulness, sleep, active recording, low-power, and error states are conveyed through physical movements (eyelid open/close and ear sweeping/drooping) to maintain realism.</li>
+            <li><strong>OLED &amp; Web Input:</strong> Completely excluded. Connects directly to internet via Wi-Fi handshake.</li>
+            <li><strong>Wi-Fi Portability &amp; Privacy:</strong> Supports a provisioning mode for credential entry, a 10-second button hold sequence to wipe stored credentials, and immediate clearing of conversation RAM.</li>
+            <li><strong>CAD Design / Timeline Disclaimer:</strong> The student has a total of 7 weeks to complete the project. Sourcing pre-designed, ready-to-slice 3D models (STL/STEP files) is highly recommended. If custom 3D model design is required, the student must budget a maximum of 1 week of the 7-week timeline to learn CAD tools (e.g. Blender) and model the parts.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Facts Provided by User</h3>
+      <ul>
+        <li>The project represents a Mechanized Bunny that has conversations with a human.</li>
+        <li>The bunny shall follow the user physically using distance sensors.</li>
+        <li>The bunny mimics emotional expressions based on the conversation's mood, using physical movement of the ears.</li>
+        <li>The bunny needs to talk through an API to retrieve answers and mood data.</li>
+        <li>The hardware suite is fixed: <strong>NXP FRDM-MCXA153</strong> as main controller, and an <strong>ESP32 suite (ESP32-S3 Nano)</strong> for Wi-Fi/Internet connection.</li>
+        <li>Power is supplied by a larger LiPo battery using separate, independent regulators to power the MCU and the DC motors.</li>
+        <li>Structural mounts are 3D printed strictly with <strong>PETG</strong> filament.</li>
+        <li>The UART link utilizes a software confirmation protocol (ACK) to ensure command delivery.</li>
+        <li>Logic interface matching and power rail routing can utilize either voltage regulators or resistor dividers.</li>
+        <li>Digital and acoustic crosstalk on the ESP32 is resolved using isolated copper wires and routing traces in opposite directions.</li>
+        <li>The MCXA153 platform constraint is flexible, allowing dual-board task separation.</li>
+        <li>The bunny must support dynamic Wi-Fi reconnection to new access points to ensure portability.</li>
+        <li>To support multi-user testing safely, the system must protect users from conversation leakage and secure stored Wi-Fi credentials.</li>
+        <li>Status LEDs are not used; eyelids closing indicates the bunny is asleep, and physical gestures indicate activity or privacy status.</li>
+        <li>The bunny must hop while moving to resemble an actual bunny, utilizing a mechanical leg linkage system.</li>
+        <li>The bunny shell must be spacious to accommodate the large number of internal components, and incorporate an onboard balance charging port for the LiPo battery.</li>
+        <li><strong>The user does not know how to make 3D CAD designs</strong>; therefore, the physical 3D printable mechanical parts and shells must be sourced as external files.</li>
+        <li><strong>Learning a CAD tool (such as Blender or SolidWorks) is out of scope</strong> due to the extensive time it requires, making pre-designed printable models a hard prerequisite.</li>
+        <li>The bunny must be able to take motion turns when necessary, using a steering actuator.</li>
+        <li><strong>The motor selection is open;</strong> the design is optimized around a single central high-torque DC gear motor driving a synchronized axle to ensure mechanical alignment.</li>
+        <li><strong>Disclaimer on Project Timeline:</strong> The student has a total of 7 weeks for project delivery. Custom CAD learning and design in Blender is restricted to at most 1 week if templates cannot be sourced.</li>
+        <li><strong>90-Degree Hopping Kick:</strong> Locomotion is achieved by driving jointed legs to a 90-degree vertical position relative to the chassis, executing a downward shove to hop the body.</li>
+        <li><strong>Low-Impact Trajectory:</strong> The hopping motion must be gentle and low-amplitude to minimize landing shock and ensure chassis stability.</li>
+      </ul>
+
+      <h3>Assumptions from Agent 0 Scoping Brief (Refined)</h3>
+      <ul>
+        <li><strong>A-001 (Autonomous Network Flow):</strong> The bunny does not require a local smartphone configuration interface during normal operation. The ESP32-S3 Nano performs a Wi-Fi connection handshake upon boot.</li>
+        <li><strong>A-002 (Cloud API Model):</strong> The external API is an HTTP REST service. The ESP32 queries the API, retrieves response data, and handles direct TTS audio rendering.</li>
+        <li><strong>A-003 (Coprocessor Division of Labor):</strong> The ESP32-S3 Nano handles networking, SSL, API connection, JSON parsing, and Direct I2S audio output. The MCXA153 handles PWM motor/servo drive, ultrasonic pulse timing, and ADC battery monitoring.</li>
+      </ul>
+
+      <h3>Additional Assumptions from Agent 1</h3>
+      <ul>
+        <li>A1-001 (User Distance Thresholds): Target tracking distance for user following is set to 30&ndash;50 cm. (AI Assumption)</li>
+        <li>A1-002 (Control Loop Frequency): The DC motor speed update control loop runs periodically every 50 ms. (AI Assumption)</li>
+        <li>A1-003 (Servo Update Period): PWM signals for ear, eyelid, and steering movement servos run at 50 Hz (20 ms period). (AI Assumption)</li>
+        <li>A1-004 (UART Configuration): The MCXA153 and ESP32-S3 Nano communicate over UART using 115200 baud, 8-N-1 formatting. (AI Assumption)</li>
+        <li>A1-005 (Battery ADC Scaling): A 2S LiPo battery is scaled down using a 10 k&Omega; / 4.7 k&Omega; voltage divider, delivering &le; 2.68V to the ADC. (AI Assumption)</li>
+        <li>A1-006 (Spacious Body Envelope): Outer shell dimensions are set to approximately 180mm (length) x 120mm (width) x 120mm (height). (AI Assumption)</li>
+        <li>A1-007 (Mechanical 3D Design Files Sourcing): Sourced from pre-existing course templates or open-source libraries. (AI Assumption)</li>
+      </ul>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section id="tiers" class="panel">
+      <h2>2. Feature Tiers</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tier</th>
+              <th>Description</th>
+              <th>Extra Components Required</th>
+              <th>Main Risks</th>
+              <th>Student Suitability</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-core">Core</span></td>
+              <td>
+                <strong>Static Ear/Eyelid prototype in Shell:</strong><br>
+                ESP32-S3 Nano performs Wi-Fi handshake, queries mock API, and outputs TTS voice via MAX98357A I2S DAC.
+                MCXA153 drives ear servos and an eyelid servo. Housed in the spacious body shell with NVS data-wiping support.
+              </td>
+              <td>
+                - ESP32-S3 Nano<br>
+                - MAX98357A I2S DAC + Speaker<br>
+                - 2x SG90 Micro Servos (Ears)<br>
+                - 1x SG90 Micro Servo (Eyelids)<br>
+                - 3D Printed Shell &amp; Brackets (Sourced Files)
+              </td>
+              <td>
+                - UART framing errors<br>
+                - Wi-Fi handshake timeout
+              </td>
+              <td>
+                <strong>High suitability:</strong> Focuses on serial communication, basic GPIO, and PWM servo control. Highly realistic for week-1 students.
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-recommended">Recommended</span></td>
+              <td>
+                <strong>Mobile Speech Companion (Target):</strong><br>
+                Adds differential hopping leg linkage (1x central DC TT gear motor + H-bridge) executing a gentle 90-degree kick, active steering rear caster/skid, ultrasonic tracking, battery monitoring, and 
+                onboard USB-C balance charging. Shell integrates magnetic quick-release latches and ventilation grilles.
+              </td>
+              <td>
+                - 1x DC TT Gear Motor (High Torque 1:120/1:220)<br>
+                - TB6612FNG Motor Driver (Single channel active)<br>
+                - 3.3V Ultrasonic Sensor<br>
+                - 2S LiPo Battery &amp; 2S Balance Charger Module (IP2326/TP5100)<br>
+                - 2S LiPo BMS Protection Board<br>
+                - 4x SG90 Micro Servos (Ears, Eyelids, Steering)<br>
+                - USB-C Panel Mount Cable &amp; Magnets<br>
+                - Regulators &amp; Bearings
+              </td>
+              <td>
+                - Mechanical binding or leg joint wear<br>
+                - High component density generating heat<br>
+                - Landing impact fracturing structural links
+              </td>
+              <td>
+                <strong>Good with guidance:</strong> Adds PWM, basic control theory, mechanical kinematics, and power system safety. Excellent engineering depth.
+              </td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-advanced">Advanced</span></td>
+              <td>
+                <strong>Voice-Input Speech Companion:</strong><br>
+                Adds local microphone (I2S MEMS INMP441) connected to the ESP32-S3 Nano to stream user voice commands to the cloud API, 
+                eliminating the need for any physical trigger buttons. Features active voice capture indicators (Eyelids fully open &amp; ears perked).
+              </td>
+              <td>
+                - INMP441 I2S MEMS Mic<br>
+                - LiPo Charger &amp; Fuel Gauge
+              </td>
+              <td>
+                - Acoustic feedback loops<br>
+                - Double-buffered I2S timing
+              </td>
+              <td>
+                <strong>Low (Optional extension):</strong> Exceeds typical time constraints. Suitable as a capstone extension for advanced teams.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section id="scenarios" class="panel">
+      <h2>3. Scenarios and User Stories</h2>
+      
+      <h3>Scenarios</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Category</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SC-001</code></td>
+              <td>Startup / Setup</td>
+              <td>The device is powered. The firmware initializes I/O pins, LPUART, and PWM timers on the MCXA153. The ESP32-S3 Nano reads Wi-Fi credentials from NVS and initiates a Wi-Fi connection handshake. Once connected, the ESP32 sends an "Online" status byte to the MCXA153, which opens the bunny's eyelids and sweeps the ears to confirm it is awake and online.</td>
+            </tr>
+            <tr>
+              <td><code>SC-002</code></td>
+              <td>Dynamic Wi-Fi Provisioning</td>
+              <td>If the Wi-Fi connection fails within 15 seconds, or if the user holds the setup button for 5 seconds at boot, the ESP32-S3 Nano launches a setup Access Point. The bunny's eyelids blink slowly to suggest it is in Wi-Fi search mode. The user connects via phone, inputs credentials, and the bunny connects and opens its eyelids wide.</td>
+            </tr>
+            <tr>
+              <td><code>SC-003</code></td>
+              <td>Multi-User Device Wiping</td>
+              <td>Tester A completes their session. Before handing the bunny to Tester B, Tester A holds down the physical setup button for 10 seconds. The ESP32-S3 Nano erases all stored Wi-Fi credentials, tokens, and caches from NVS, reboots, sweeps the ears to neutral, and closes the eyelids to sleep.</td>
+            </tr>
+            <tr>
+              <td><code>SC-004</code></td>
+              <td>Onboard Battery Charging</td>
+              <td>The battery voltage drops below 6.4V, triggering sleep. The user plugs a standard 5V USB power adapter into the USB-C charging port mounted on the bunny's shell. The onboard 2S Balance Charger circuit charges and balances both LiPo cells, indicating charging progress via internal lighting visible through the ventilation grilles. Eyelids remain closed.</td>
+            </tr>
+            <tr>
+              <td><code>SC-005</code></td>
+              <td>Normal Operation</td>
+              <td>The user triggers the conversation. The ESP32-S3 Nano queries the conversational AI API, receives the response text, mood, and servo coordinates, and parses the JSON body. The ESP32 extracts the servo targets and requests the synthesized speech audio stream from the cloud. Eyelids are open during interaction.</td>
+            </tr>
+            <tr>
+              <td><code>SC-006</code></td>
+              <td>Active Privacy Cleansing</td>
+              <td>The voice response completes playback. The ESP32-S3 Nano immediately writes zeros over all local audio buffers and parses text strings in RAM. The next API request utilizes a newly generated, isolated session ID to prevent conversation profiling.</td>
+            </tr>
+            <tr>
+              <td><code>SC-007</code></td>
+              <td>Actuator Behavior (Ears &amp; Eyelids)</td>
+              <td>The ESP32-S3 Nano sends the parsed servo positions to the MCXA153 over LPUART. The MCXA153 updates its PWM registers on the FTM/TPM timers, driving the SG90 ear servos to sweep to the corresponding positions (e.g. drooping for sad, perking for happy) and keeping eyelids open.</td>
+            </tr>
+            <tr>
+              <td><code>SC-008</code></td>
+              <td>Sensor Processing</td>
+              <td>During speech, the 50 ms motor loop executes on the MCXA153. The MCU triggers the ultrasonic sensor, measures the returned Echo pulse duration, and calculates user distance in centimeters.</td>
+            </tr>
+            <tr>
+              <td><code>SC-009</code></td>
+              <td>Proximity Hopping &amp; Steering</td>
+              <td>The motor control loop detects the user is at 80 cm, and slightly offset to the right. The MCXA153 drives the single central DC gear motor, rotating the shared double-crank axle. Both leg linkages rotate in phase. As they sweep to the 90-degree vertical position relative to the chassis, they execute a gentle, low-clearance downward push against the ground, executing a stable hop that lifts the body forward. Concurrently, it updates the steering servo PWM registers to pivot the rear tail-skid to the right, executing a smooth right turn to align with the user, slowing down as it reaches the 50 cm boundary.</td>
+            </tr>
+            <tr>
+              <td><code>SC-010</code></td>
+              <td>Safety &amp; Reliability (Sleep Halt)</td>
+              <td>The user presses the physical emergency stop button, or a timeout / low-battery threshold is reached. The MCXA153 immediately forces motor outputs to 0%, pulls STBY low, centers the steering servo, droops the ears, and closes the eyelids to indicate that the bunny is asleep.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>User Stories</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Story Statement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>US-001</code></td>
+              <td>As a student developer, I need to use the NXP FRDM-MCXA153 board, so that the project complies with the course's mandatory hardware platform.</td>
+            </tr>
+            <tr>
+              <td><code>US-002</code></td>
+              <td>As a user, I need the bunny to dynamically connect to different Wi-Fi networks using a setup mode, so that I can easily bring the companion to new environments.</td>
+            </tr>
+            <tr>
+              <td><code>US-003</code></td>
+              <td>As a tester, I need to easily wipe my Wi-Fi credentials and conversation logs from the device, so that my personal network keys and private voice contents are not exposed to subsequent testers.</td>
+            </tr>
+            <tr>
+              <td><code>US-004</code></td>
+              <td>As a tester, I need the communication to be encrypted and my conversation session ID to be isolated, so that my conversations cannot be intercepted on local Wi-Fi or linked to other testers' profiles.</td>
+            </tr>
+            <tr>
+              <td><code>US-005</code></td>
+              <td>As a user, I need the bunny to convey its state of sleep and activity through physical movements of the ears and eyelids, so that it looks like an organic creature without unnatural flashing LEDs.</td>
+            </tr>
+            <tr>
+              <td><code>US-006</code></td>
+              <td>As a developer, I need to power the motors and microcontrollers from a single large LiPo battery with separate regulators, so that logic circuitry is fully isolated from motor transients.</td>
+            </tr>
+            <tr>
+              <td><code>US-007</code></td>
+              <td>As a user, I want the bunny to move by hopping like a real rabbit, utilizing a robust leg linkage system that avoids binding, joint wear, and synchronization failures.</td>
+            </tr>
+            <tr>
+              <td><code>US-008</code></td>
+              <td>As a builder, I need structural mounts and leg linkages printed with PETG filament and low-friction bearings, so that the hopping mechanism has high toughness and structural durability.</td>
+            </tr>
+            <tr>
+              <td><code>US-010</code></td>
+              <td>As a student builder with a 7-week project timeline, I need pre-designed mechanical model templates (STL/STEP) to build from, or I must strictly limit custom Blender CAD learning and design to a maximum of 1 week.</td>
+            </tr>
+            <tr>
+              <td><code>US-011</code></td>
+              <td>As a user, I need the bunny to be able to take motion turns when necessary, so that it can steer around obstacles or track my position as I turn corners.</td>
+            </tr>
+            <tr>
+              <td><code>US-013</code></td>
+              <td>As a builder, I want a non-piston leg linkage that hops the whole body by rotating the leg to 90 degrees relative to the body, executing a gentle low-amplitude hop to keep the movement stable and protect components.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="functional" class="panel">
+      <h2>4. Functional Requirements</h2>
+      
+      <div class="disclaimer-box">
+        <div class="disclaimer-title">MCU Hardware Policy Note</div>
+        <p class="disclaimer-text">
+          To maintain architectural integrity, exact MCU pin designations and SDK library API names are kept generic. Pin mapping details must be validated against the FRDM-MCXA153 board layout and the NXP MCUXpresso Config Tool during initial hardware-firmware integration.
+        </p>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Requirement Statement</th>
+              <th>Priority</th>
+              <th>Source</th>
+              <th>Story</th>
+              <th>Verification</th>
+              <th>Acceptance Criterion</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>FR-001</code></td>
+              <td>Core</td>
+              <td>The system shall use the NXP FRDM-MCXA153 board as the main controller for low-level sensor-motor control and real-time execution. A secondary processing board (ESP32-S3 Nano) is permitted for high-level operations.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-001</td>
+              <td>Inspection</td>
+              <td>BOM confirms MCXA153 handles low-level actuator drive and real-time loop tasks.</td>
+            </tr>
+            <tr>
+              <td><code>FR-002</code></td>
+              <td>Core</td>
+              <td>The system shall use the ESP32-S3 Nano as the Wi-Fi, API, and audio parsing coprocessor.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-002</td>
+              <td>Inspection</td>
+              <td>Physical board layout includes the ESP32-S3 Nano connected to the MCXA153.</td>
+            </tr>
+            <tr>
+              <td><code>FR-003</code></td>
+              <td>Core</td>
+              <td>Upon power-on, the MCXA153 shall initialize configured GPIOs, LPUART, ADC, PWM timers, and external registers, transitioning to the <code>IDLE</code> state. It shall sweep ear servos to neutral and open eyelids to confirm initialization.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>Derived</td>
+              <td>US-008</td>
+              <td>Test</td>
+              <td>Debug port outputs boot diagnostics. Eyelids open and ears sweep to neutral.</td>
+            </tr>
+            <tr>
+              <td><code>FR-004</code></td>
+              <td>Core</td>
+              <td>The ESP32-S3 Nano shall perform a Wi-Fi handshake to connect to a local access point using credentials retrieved from NVS upon boot.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-002</td>
+              <td>Test</td>
+              <td>ESP32 logs show successful connection using stored credentials.</td>
+            </tr>
+            <tr>
+              <td><code>FR-005</code></td>
+              <td>Core</td>
+              <td>The ESP32-S3 Nano shall make HTTPS requests to the cloud AI API, parse the JSON response, and extract <code>servo_angle</code> (integer) and <code>mood</code> parameters.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-005</td>
+              <td>Test</td>
+              <td>JSON parser extracts data correctly from simulated API responses.</td>
+            </tr>
+            <tr>
+              <td><code>FR-006</code></td>
+              <td>Core</td>
+              <td>The ESP32-S3 Nano shall directly parse and play back the voice audio stream via I2S to the MAX98357A DAC and speaker. No audio data shall be transferred to the MCXA153.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-004</td>
+              <td>Demo</td>
+              <td>Voice response is audible from the speaker. Scope confirms no audio frames on the UART/SPI interface.</td>
+            </tr>
+            <tr>
+              <td><code>FR-007</code></td>
+              <td>Core</td>
+              <td>The ESP32-S3 Nano shall transmit parsed servo and status parameters to the MCXA153 over LPUART at 115200 baud, 8-N-1 formatting.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-005</td>
+              <td>Test</td>
+              <td>MCXA153 receives and parses UART commands containing correct angle targets.</td>
+            </tr>
+            <tr>
+              <td><code>FR-008</code></td>
+              <td>Core</td>
+              <td>The MCXA153 shall actuate two SG90 ear servo motors using PWM signals (50 Hz period) to angles received from the ESP32-S3 Nano.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-005</td>
+              <td>Demo</td>
+              <td>Ears move to the commanded angles &plusmn; 5 degrees.</td>
+            </tr>
+            <tr>
+              <td><code>FR-009</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall drive a single central high-torque DC gear motor using PWM (speed) and GPIO (direction) signals via a TB6612FNG driver to actuate the hopping double-crank axle.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-007</td>
+              <td>Test</td>
+              <td>PWM duty cycle and GPIO state logic transition correctly matching steering/motion commands.</td>
+            </tr>
+            <tr>
+              <td><code>FR-010</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall measure user distance in centimeters by triggering the ultrasonic sensor and timing the returned Echo pulse via a GPIO capture.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-003</td>
+              <td>Test</td>
+              <td>Distance values resolve accurately within a 2 cm to 150 cm window with a tolerance of &plusmn; 2 cm.</td>
+            </tr>
+            <tr>
+              <td><code>FR-011</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall run a proportional control loop to drive the central DC motor, keeping the user within a 30&ndash;50 cm window (AI Assumption) by modulating hopping duty cycles.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact</td>
+              <td>US-007</td>
+              <td>Demo</td>
+              <td>Robot hops forward when user distance &gt; 50 cm and hops backward when user distance &lt; 30 cm. Stops inside 30&ndash;50 cm.</td>
+            </tr>
+            <tr>
+              <td><code>FR-012</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall monitor battery voltage by reading an analog value from a resistor voltage divider connected to the positive LiPo battery terminal. If the voltage drops below 6.4V, the MCXA153 shall disable the motor, droop the ears, and close the eyelids to sleep.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-006</td>
+              <td>Test</td>
+              <td>At V < 6.4V, motor stops, ears droop, and eyelids close completely.</td>
+            </tr>
+            <tr>
+              <td><code>FR-013</code></td>
+              <td>Recommended</td>
+              <td>If the emergency stop button is pressed, the MCXA153 shall immediately override all motion, set the central DC motor PWM to 0%, pull the TB6612FNG STBY pin low, center the steering servo, and close the eyelids to asleep state.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>Derived</td>
+              <td>US-007</td>
+              <td>Test</td>
+              <td>Pressing the button halts legs within 50 ms, centers steering, and closes eyelids.</td>
+            </tr>
+            <tr>
+              <td><code>FR-014</code></td>
+              <td>Core</td>
+              <td>If communication between the MCXA153 and ESP32 is lost for &gt; 3.0 seconds (AI Assumption), the MCXA153 shall enter a safe state, stop the motor, center the ears, center the steering, and close the eyelids to suggest the bunny is asleep.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>Derived</td>
+              <td>US-007</td>
+              <td>Test</td>
+              <td>Disconnecting UART pins forces motor to stop, steering to center, and eyelids to close within 3.5 seconds.</td>
+            </tr>
+            <tr>
+              <td><code>FR-015</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall transmit a software acknowledgment (ACK) packet back to the ESP32-S3 Nano upon successful receipt and CRC check of a UART control message.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-005</td>
+              <td>Test</td>
+              <td>ESP32-S3 Nano registers a valid ACK byte within 100 ms of transmitting a control frame.</td>
+            </tr>
+            <tr>
+              <td><code>FR-016</code></td>
+              <td>Recommended</td>
+              <td>If the ultrasonic distance sensor fails to return a valid update for 250 ms (AI Assumption), the MCXA153 control task shall stop the DC motor, droop ears, center steering, and close eyelids.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-007</td>
+              <td>Test</td>
+              <td>Simulated Echo pin disconnection triggers motor stop, steering centering, and eyelid closure in &le; 250 ms.</td>
+            </tr>
+            <tr>
+              <td><code>FR-017</code></td>
+              <td>Recommended</td>
+              <td>If the ESP32-S3 Nano fails to connect to Wi-Fi within 15 seconds, or if the user holds down the startup button for 5 seconds at boot, the ESP32 shall launch a local configuration Access Point portal to receive and save new Wi-Fi credentials to NVS.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-002</td>
+              <td>Test</td>
+              <td>Setup AP launches correctly, accepts credentials via web form, and successfully saves them to NVS.</td>
+            </tr>
+            <tr>
+              <td><code>FR-018</code></td>
+              <td>Core</td>
+              <td>If the setup button is held down for 10 seconds during startup, the ESP32-S3 Nano shall wipe all saved Wi-Fi credentials, tokens, and session history from NVS, close the eyelids to sleep, and reboot.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-003</td>
+              <td>Test</td>
+              <td>Holding the button for 10 seconds clears all stored credentials, verified by NVS state check after reboot. Eyelids close during formatting.</td>
+            </tr>
+            <tr>
+              <td><code>FR-019</code></td>
+              <td>Core</td>
+              <td>The ESP32-S3 Nano shall generate a new random UUID session key upon boot or Wi-Fi configuration change, preventing the cloud API from linking conversation history between subsequent test users.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-004</td>
+              <td>Test</td>
+              <td>HTTP payloads show distinct, non-linked session identifiers across boots and network resets.</td>
+            </tr>
+            <tr>
+              <td><code>FR-020</code></td>
+              <td>Core</td>
+              <td>The system shall actively clear (overwrite with zeros) all conversation text buffers and audio memory blocks in RAM immediately after the Text-to-Speech playback is complete.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-003</td>
+              <td>Test</td>
+              <td>Memory inspection confirms that sensitive response text is overwritten in RAM immediately post-speech.</td>
+            </tr>
+            <tr>
+              <td><code>FR-021</code></td>
+              <td>Core</td>
+              <td>The MCXA153 shall actuate a micro servo using PWM signals (50 Hz period) to open and close the bunny's eyelids, conveying states of wakefulness, Wi-Fi searching, error sleep, and shutdown.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-005</td>
+              <td>Demo</td>
+              <td>Eyelids open fully on successful handshake, blink slowly during AP provisioning, and close fully on low battery or communication loss.</td>
+            </tr>
+            <tr>
+              <td><code>FR-022</code></td>
+              <td>Recommended</td>
+              <td>The mechanical leg linkages shall be driven by a single central DC TT gear motor rotating a shared double-crank axle to maintain mechanical phase lock between the left and right legs.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-007</td>
+              <td>Inspection</td>
+              <td>Visual design inspection confirms both leg drive cranks are physically pinned and locked in phase to the same central motor axle.</td>
+            </tr>
+            <tr>
+              <td><code>FR-023</code></td>
+              <td>Recommended</td>
+              <td>The power subsystem shall incorporate an onboard 2S balance charger circuit connected to a panel-mounted USB-C port, enabling the 2S LiPo battery to be charged safely without shell disassembly.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-009</td>
+              <td>Test</td>
+              <td>USB power delivery is negotiated; onboard charger balances and charges cells, stopping when charge is complete (8.4 V).</td>
+            </tr>
+            <tr>
+              <td><code>FR-024</code></td>
+              <td>Recommended</td>
+              <td>The outer 3D printed bunny shell shall have a spacious enclosure design (minimum dimensions of 180mm x 120mm x 120mm) to house the dual-board controllers, regulators, battery, and actuators, incorporating airflow ventilation grilles and magnetic quick-release latches for toolless debugger access.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-009</td>
+              <td>Inspection</td>
+              <td>Physical shell houses all components without wire pinching, provides airflow vents, and opens toollessly using magnets.</td>
+            </tr>
+            <tr>
+              <td><code>FR-025</code></td>
+              <td>Recommended</td>
+              <td>The MCXA153 shall actuate a steering micro servo (SG90) using PWM signals (50 Hz period) to pivot a rear steering tail-skid assembly left or right by &plusmn; 30 degrees (AI Assumption), enabling the hopping chassis to take motion turns when necessary.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-011</td>
+              <td>Test</td>
+              <td>Steering servo moves to target steering angles on command. Assembly turns chassis dynamically during hopping.</td>
+            </tr>
+            <tr>
+              <td><code>FR-026</code></td>
+              <td>Recommended</td>
+              <td>The mechanical leg linkages shall be jointed levers designed such that when they sweep through a 90-degree vertical position relative to the chassis, they execute a gentle, low-amplitude downward kick against the floor, lifting the entire bunny body slightly off the ground (5 to 15 mm vertical lift) to initiate a stable forward hop/scoot without high-impact stress.</td>
+              <td><span class="badge badge-must">Must</span></td>
+              <td>User Fact / Confirmed</td>
+              <td>US-013</td>
+              <td>Test</td>
+              <td>Continuous motor rotation sweeps leg linkages through 90 degrees, lifting the chassis off the ground during the kick phase.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section id="nonfunctional" class="panel">
+      <h2>5. Non-Functional Requirements</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Category</th>
+              <th>Requirement Statement</th>
+              <th>Threshold or Metric</th>
+              <th>Source</th>
+              <th>Verification Method</th>
+              <th>Risk of Non-Compliance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>NFR-001</code></td>
+              <td>Core</td>
+              <td>Safety / Electrical</td>
+              <td>All external components connected to the FRDM-MCXA153 shall be electrically compatible with the board logic level and current limits, or shall use appropriate interface circuitry. Status feedback must not use LEDs.</td>
+              <td>GPIO voltage &le; 3.3 V; Current &le; 4 mA per pin. Eyelid/ear/steering actuators must handle status/turns organically. No status LEDs permitted.</td>
+              <td>User Fact</td>
+              <td>Inspection / Measurement</td>
+              <td>Permanent destruction of the MCXA153 GPIO peripherals or internal silicon rails.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-002</code></td>
+              <td>Core</td>
+              <td>Memory</td>
+              <td>The static RAM utilization of the MCXA153 firmware shall stay within the microcontroller limits.</td>
+              <td>SRAM usage &le; 28 KB (leaving 4 KB safety margin). (AI Assumption)</td>
+              <td>AI Assumption</td>
+              <td>Analysis of compiler memory map (.map file)</td>
+              <td>Linker failure or runtime stack/heap collision leading to hard fault resets.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-003</code></td>
+              <td>Recommended</td>
+              <td>Power isolation &amp; logic mapping</td>
+              <td>The system shall power the MCU and the central DC motor using separate, independent voltage regulators from the shared battery pack, and scale diagnostic battery signals using a resistor voltage divider.</td>
+              <td>Regulated 5V/3.3V rails for digital power; resistor dividers (10 k&Omega; / 4.7 k&Omega;) scale diagnostic endpoints &le; 2.68 V for ADC.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Inspection / Volt-meter reading</td>
+              <td>Inductive voltage spikes from DC motor stalls causing MCU reset or ADC damage.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-004</code></td>
+              <td>Recommended</td>
+              <td>Mechanical Parts / Filaments</td>
+              <td>The 3D printed components of the bunny shall be printed with filaments selected for the mechanical demands of each specific part. Structural mounts and leg linkages must be printed strictly in PETG. Joints must utilize brass bushings or ball bearings.</td>
+              <td>Structural mounts/linkage arms: PETG; Feet pads/flexible joint dampers: TPU; Non-stress shells: PLA; Low-friction MR85ZZ bearings at pivots.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Inspection of components / Filament specification</td>
+              <td>Mechanical fracture of links, high binding friction, and motor stalling.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-005</code></td>
+              <td>Recommended</td>
+              <td>Timing</td>
+              <td>The motor control following loop must execute at a deterministic periodic rate to prevent tracking lag.</td>
+              <td>Loop execution period of 50 ms &plusmn; 5 ms. (AI Assumption)</td>
+              <td>AI Assumption</td>
+              <td>Test (toggling a GPIO and measuring with logic analyzer)</td>
+              <td>Laggy user tracking, jerky movement, or robot overrun.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-006</code></td>
+              <td>Recommended</td>
+              <td>Safety</td>
+              <td>If the distance sensor readings become invalid or exceed tracking limits, the system must immediately disable the DC motor and shut the eyelids.</td>
+              <td>Stop command issued and eyelids closed within &le; 100 ms of detecting out-of-range sensor readings. (AI Assumption)</td>
+              <td>AI Assumption</td>
+              <td>Test (pulling sensor pin or simulating object removal)</td>
+              <td>Robot runaway, collision with walls, or falling from tables.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-007</code></td>
+              <td>Core</td>
+              <td>Wi-Fi Connection</td>
+              <td>The ESP32-S3 Nano shall establish a Wi-Fi link within a defined startup window before indicating a connection failure by slow blinking of the eyelids.</td>
+              <td>Wi-Fi connection handshake timeout &le; 15 seconds. (AI Assumption)</td>
+              <td>AI Assumption</td>
+              <td>Test (forcing connection failures and measuring eyelid movements)</td>
+              <td>Infinite blocking during boot, rendering the bunny unresponsive.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-008</code></td>
+              <td>Core</td>
+              <td>Privacy / Security</td>
+              <td>The system shall encrypt all API communications over the network to prevent conversation data leakage to other local network users.</td>
+              <td>Enforce TLS 1.2 or higher for all HTTPS transactions from the ESP32-S3 Nano.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Inspection / Network Sniffing Test</td>
+              <td>Eavesdropping of private conversations by others sharing the local test Wi-Fi.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-009</code></td>
+              <td>Advanced</td>
+              <td>Privacy / Security</td>
+              <td>The system shall not capture or transmit voice audio passively; active recording must require explicit user activation and provide a clear visual indicator. Status indicators must not use LEDs.</td>
+              <td>Recording starts only on button press. Active recording state indicated by a physical gesture (e.g. perked ears/fully open eyelids) rather than generic flashing LEDs.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Inspection / Demonstration</td>
+              <td>Passive listening or "always-on" microphone leaking ambient personal logs.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-010</code></td>
+              <td>Recommended</td>
+              <td>Battery Safety</td>
+              <td>The battery power circuit shall include an integrated 2S Battery Management System (BMS) providing safety protection boundaries.</td>
+              <td>Cell overcharge threshold 4.25 V &plusmn; 0.05 V; over-discharge cut-off 3.0 V &plusmn; 0.1 V (overall pack 6.0 V); overcurrent protection &ge; 4 A.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Inspection / Short-circuit &amp; load testing</td>
+              <td>Cell damage, swelling, or thermal runaway/fire hazards due to over-discharge or short circuits.</td>
+            </tr>
+            <tr>
+              <td><code>NFR-011</code></td>
+              <td>Recommended</td>
+              <td>CAD File Sourcing &amp; Time Budget</td>
+              <td>The project timeline allows a maximum of 1 week (out of the 7-week total project duration) for the student to learn CAD tools (e.g. Blender) and design custom mechanical parts/shells if pre-designed assets are not available. Sourcing pre-designed STL/STEP templates is highly recommended to minimize this delay.</td>
+              <td>CAD design phase &le; 1 week. 100% of STL/STEP files for shell, legs, mounts, steering tail-skid, and crank linkages must be sourced or modeled within this period.</td>
+              <td>User Fact / Confirmed</td>
+              <td>Audit of file availability and design log</td>
+              <td>Inability to fabricate physical parts, or extreme project delays caused by exceeding the 1-week CAD buffer during the 7-week timeline.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section id="hardware" class="panel">
+      <h2>6. Hardware and Mechanical Description</h2>
+      <p>
+        The Mecha-Iepurele hardware architecture features the <strong>NXP FRDM-MCXA153</strong> development board as the central low-level processing unit, running all local motor control loops, servo ear/eyelid animations, and ADC readings. High-level network routing, API payload processing, and Text-to-Speech audio rendering are offloaded to the secondary <strong>ESP32-S3 Nano processing board</strong>.
+      </p>
+
+      <!-- EMBEDDED BLUEPRINT SCHEMATIC -->
+      <div style="text-align: center; margin-bottom: 24px; border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: rgba(0,0,0,0.2);">
+        <img src="bunny_mechanical_schematic.jpg" alt="Mecha-Iepurele Mechanical Blueprint and Assembly Schematic" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+      </div>
+
+      <div class="grid-2">
+        <div class="details-card">
+          <h4>Component Interconnection &amp; Flow</h4>
+          <ul>
+            <li><strong>Main Controller (MCXA153):</strong> Executes the main superloop, reading the ultrasonic sensor, checking battery level via ADC, and driving the actuators. Drives 2x ear servos, 1x eyelid servo, 1x steering servo, and 1x central DC motor H-bridge channel.</li>
+            <li><strong>Coprocessor (ESP32-S3 Nano):</strong> Performs the Wi-Fi handshake, connects to the Internet, queries the cloud AI API, parses the JSON payload, directly outputs TTS voice via I2S, and monitors command ACKs from the MCXA153. Supports AP provisioning setup and NVS data-wiping.</li>
+            <li><strong>MAX98357A I2S DAC &amp; Speaker:</strong> Connected directly to the <strong>ESP32-S3 Nano</strong>'s I2S pins. Amplifies and converts the digital voice stream locally.</li>
+            <li><strong>Ultrasonic Distance Sensor:</strong> Connects via GPIOs to the MCXA153. A 3.3V compatible sensor (e.g. RCWL-1601) is used.</li>
+            <li><strong>TB6612FNG H-bridge Driver:</strong> Drives the single high-torque DC TT gear motor based on PWM and direction outputs from the MCXA153.</li>
+          </ul>
+        </div>
+        
+        <div class="details-card">
+          <h4>Mechanical, Hopping &amp; Steering Architecture</h4>
+          <ul>
+            <li><strong>Hopping &amp; Gentle Trajectory:</strong> A single central DC TT gear motor rotates a shared double-crank axle, driving jointed leg linkages (scissor or 4-bar swing type). Rather than telescoping internally, the legs act as rotary levers. As the motor turns the axle, the legs sweep downward. When they pass through the 90-degree vertical angle (straight down relative to the chassis), they deliver a gentle downward shove against the floor, launching the entire body off the ground to initiate a low-amplitude hop (5 to 15 mm vertical lift). This low-impact trajectory prevents chassis instability, avoids tipping, minimizes mechanical stress on linkages, and matches the torque capability of standard DC TT gear motors.</li>
+            <li><strong>Steering Subsystem:</strong> To enable turns while preserving left/right leg phase lock (preventing tipping), the chassis incorporates a **steerable rear tail-skid or pivoting wheel assembly** driven by a dedicated SG90 micro servo. Pivoting this assembly left or right steers the chassis dynamically while the hopping linkages drive forward.</li>
+            <li><strong>Joints &amp; Bearings:</strong> Low-friction miniature ball bearings (MR85ZZ) or brass sleeve bushings are required at all pivoting pins.</li>
+            <li><strong>Filament Selection (US-008):</strong>
+              <ul>
+                <li><strong>PETG:</strong> Structural mounts, crank arms, steering brackets, and leg links to resist cyclic hopping landing impact fatigue.</li>
+                <li><strong>TPU:</strong> Flexible feet traction pads and landing shock dampers.</li>
+                <li><strong>PLA:</strong> Spacious decorative non-stress body shell (length ~180mm, width ~120mm, height ~120mm) featuring ventilation grilles and magnetic latches.</li>
+              </ul>
+            </li>
+            <li><strong>3D CAD Assets &amp; Timeline Lock:</strong> While pre-designed templates are highly recommended, the student may budget up to 1 week of the 7-week total project schedule to learn CAD tools (e.g. Blender) and perform custom 3D designs for linkages or cosmetic shells if necessary.</li>
+            <li><strong>Power Supply &amp; Charger:</strong> Powered by a shared 2S LiPo battery. Includes separate regulators for MCU and motor, and protective signal dividers. An onboard **2S balance charger module** (IP2326/TP5100) and **2S BMS protection board** are integrated, allowing safe USB-C balancing and charging of cells without removing the battery pack from the shell.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section id="pins" class="panel">
+      <h2>7. Pin Allocation Draft</h2>
+      
+      <div class="disclaimer-box">
+        <div class="disclaimer-title">Pin Assignment Disclaimer</div>
+        <p class="disclaimer-text">
+          Generic FRDM-MCXA153 capability only - exact pin requires board pinout and datasheet verification.
+        </p>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Component</th>
+              <th>Tier</th>
+              <th>Signal Name</th>
+              <th>Required MCU Capability</th>
+              <th>Suggested Pin / Capability Category</th>
+              <th>Voltage Level</th>
+              <th>Direction</th>
+              <th>Interface Type</th>
+              <th>Verification Checklist</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ESP32-S3 Nano</td>
+              <td>Core</td>
+              <td>UART_TX</td>
+              <td>LPUART RX input</td>
+              <td>Generic LPUART0_RX</td>
+              <td>3.3 V</td>
+              <td>Input</td>
+              <td>UART (115200)</td>
+              <td>Confirm configuration matches LPUART peripheral routing.</td>
+            </tr>
+            <tr>
+              <td>ESP32-S3 Nano</td>
+              <td>Core</td>
+              <td>UART_RX</td>
+              <td>LPUART TX output</td>
+              <td>Generic LPUART0_TX</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>UART (115200)</td>
+              <td>Verify TX buffer is set to push-pull drive.</td>
+            </tr>
+            <tr>
+              <td>LiPo Battery Positive</td>
+              <td>Recommended</td>
+              <td>BATT_VSENSE</td>
+              <td>ADC Analog Input</td>
+              <td>Generic ADC Channel</td>
+              <td>&le; 2.68 V (from 7.4V-8.4V LiPo via divider)</td>
+              <td>Input</td>
+              <td>Analog ADC</td>
+              <td>Verify resistor divider output does not exceed 3.3V at fully charged 8.4V.</td>
+            </tr>
+            <tr>
+              <td>Left Ear Servo</td>
+              <td>Core</td>
+              <td>SERVO_PWM_L</td>
+              <td>Timer PWM output (FTM/TPM)</td>
+              <td>Generic PWM Channel 0</td>
+              <td>3.3 V Logic / 5 V Power</td>
+              <td>Output</td>
+              <td>PWM (50 Hz)</td>
+              <td>Scope PWM pulse widths (1.0 - 2.0 ms) under load.</td>
+            </tr>
+            <tr>
+              <td>Right Ear Servo</td>
+              <td>Core</td>
+              <td>SERVO_PWM_R</td>
+              <td>Timer PWM output (FTM/TPM)</td>
+              <td>Generic PWM Channel 1</td>
+              <td>3.3 V Logic / 5 V Power</td>
+              <td>Output</td>
+              <td>PWM (50 Hz)</td>
+              <td>Verify servo operates without resetting the MCU.</td>
+            </tr>
+            <tr>
+              <td>Eyelid Servo</td>
+              <td>Core</td>
+              <td>SERVO_PWM_EYELID</td>
+              <td>Timer PWM output (FTM/TPM)</td>
+              <td>Generic PWM Channel 4</td>
+              <td>3.3 V Logic / 5 V Power</td>
+              <td>Output</td>
+              <td>PWM (50 Hz)</td>
+              <td>Verify PWM controls open, closed, and blink profiles cleanly.</td>
+            </tr>
+            <tr>
+              <td>Steering Servo</td>
+              <td>Recommended</td>
+              <td>SERVO_PWM_STEER</td>
+              <td>Timer PWM output (FTM/TPM)</td>
+              <td>Generic PWM Channel 5</td>
+              <td>3.3 V Logic / 5 V Power</td>
+              <td>Output</td>
+              <td>PWM (50 Hz)</td>
+              <td>Verify PWM controls steering angle output (&plusmn;30 degrees) cleanly.</td>
+            </tr>
+            <tr>
+              <td>Motor Driver (TB6612)</td>
+              <td>Recommended</td>
+              <td>MOTOR_PWM</td>
+              <td>Timer PWM output (FTM/TPM)</td>
+              <td>Generic PWM Channel 2</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>PWM (10 kHz)</td>
+              <td>Verify speed modulation of central motor.</td>
+            </tr>
+            <tr>
+              <td>Motor Driver (TB6612)</td>
+              <td>Recommended</td>
+              <td>MOTOR_DIR1</td>
+              <td>GPIO Output</td>
+              <td>Generic GPIO pin</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>GPIO</td>
+              <td>Check direction transitions.</td>
+            </tr>
+            <tr>
+              <td>Motor Driver (TB6612)</td>
+              <td>Recommended</td>
+              <td>MOTOR_DIR2</td>
+              <td>GPIO Output</td>
+              <td>Generic GPIO pin</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>GPIO</td>
+              <td>Verify complementary logic to DIR1.</td>
+            </tr>
+            <tr>
+              <td>Motor Driver (TB6612)</td>
+              <td>Recommended</td>
+              <td>STBY</td>
+              <td>GPIO Output</td>
+              <td>Generic GPIO pin</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>GPIO</td>
+              <td>Verify standby logic puts motor in free-wheeling state.</td>
+            </tr>
+            <tr>
+              <td>Ultrasonic Sensor</td>
+              <td>Recommended</td>
+              <td>TRIG</td>
+              <td>GPIO Output</td>
+              <td>Generic GPIO pin</td>
+              <td>3.3 V</td>
+              <td>Output</td>
+              <td>GPIO Pulse</td>
+              <td>Confirm 10 &micro;s trigger pulse width is accurate.</td>
+            </tr>
+            <tr>
+              <td>Ultrasonic Sensor</td>
+              <td>Recommended</td>
+              <td>ECHO</td>
+              <td>GPIO Input Capture / Interrupt</td>
+              <td>Generic Input Capture pin</td>
+              <td>3.3 V (level-shifted)</td>
+              <td>Input</td>
+              <td>Pulse Width</td>
+              <td>Verify resistor dividers or regulators are present on Echo return line.</td>
+            </tr>
+            <tr>
+              <td>Emergency Stop Button</td>
+              <td>Recommended</td>
+              <td>STOP_BTN</td>
+              <td>GPIO Input with Pull-up</td>
+              <td>Generic Interrupt GPIO</td>
+              <td>3.3 V</td>
+              <td>Input</td>
+              <td>GPIO (Interrupt)</td>
+              <td>Verify internal pull-up resistor is active.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size: 12px; color: var(--text-dim); margin-top: 8px;">
+        * Note: All I2S connections (BCLK, LRCK, DIN) to the MAX98357A DAC are routed directly from the <strong>ESP32-S3 Nano</strong>'s GPIO pins, and are not mapped to the MCXA153.
+      </p>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section id="firmware" class="panel">
+      <h2>8. Firmware Architecture</h2>
+      
+      <p><strong>Architecture Style:</strong> Asynchronous Dual-processor superloop execution with UART ACK checks</p>
+      
+      <div class="grid-2">
+        <div class="details-card">
+          <h4>ESP32-S3 Nano Flow</h4>
+          <p style="font-size: 13px; margin: 0;">
+            Handles Wi-Fi provisioning and encrypted API transactions. Re-generates session UUIDs for user isolation. 
+            Runs a startup pin poll: if the setup button is held for 10 seconds, NVS is formatted. Zero-fills RAM buffers post-speech.
+          </p>
+        </div>
+        <div class="details-card">
+          <h4>MCXA153 Firmware Modules</h4>
+          <p style="font-size: 13px; margin: 0;">
+            Runs a lightweight bare-metal superloop.
+            Modules: <code>main.c</code>, <code>uart_comm.c</code>, <code>motor_driver.c</code> (drives single DC motor), <code>servo_ears.c</code>, 
+            <code>eyelid_control.c</code>, <code>steering_control.c</code> (steers tail-skid PWM), <code>ultrasonic.c</code>, and <code>battery_adc.c</code>.
+          </p>
+        </div>
+      </div>
+
+      <h3>MCXA153 Startup Sequence</h3>
+      <ol>
+        <li>Disable global interrupts.</li>
+        <li>Configure MCU system clocks to run at maximum speed (48 MHz).</li>
+        <li>Initialize GPIO ports, enabling internal pull-ups for inputs and setting output pins to default logic levels (motor off, driver in standby).</li>
+        <li>Configure LPUART peripheral (115200, 8-N-1) and enable LPUART RX interrupts.</li>
+        <li>Configure FTM/TPM timers: TPM0 for DC motor PWM (10 kHz carrier) and TPM1 for ear, eyelid, and steering servos PWM (50 Hz).</li>
+        <li>Configure ADC peripheral (12-bit resolution) and calibrate the channel connected to the battery voltage divider.</li>
+        <li>Initialize SysTick timer to generate interrupts every 1 ms.</li>
+        <li>Enable global interrupts.</li>
+        <li>Confirm handshake from ESP32-S3 Nano, then transition to <code>IDLE</code>. Eyelids open, ears sweep to neutral, steering centers.</li>
+      </ol>
+
+      <h3>MCXA153 Main Superloop Flow</h3>
+      <ul>
+        <li><strong>Task 1: Command Parser &amp; ACK:</strong> If a complete LPUART packet is received from the ESP32:
+          <ul>
+            <li>Validate checksum / CRC.</li>
+            <li>If valid, transmit an <code>ACK</code> byte (e.g. <code>0x06</code>) back to the ESP32-S3 Nano.</li>
+            <li>Update ear servo PWM registers, eyelid positions, and steering angles based on parameters.</li>
+          </ul>
+        </li>
+        <li><strong>Task 2: Motor Control, Steering &amp; Battery Poll (Every 50 ms):</strong>
+          <ul>
+            <li>Trigger the ultrasonic sensor, measure Echo, and compute distance.</li>
+            <li>If Echo does not update for 250 ms, enter the safe state (disable PWM, center steering, close eyelids, droop ears).</li>
+            <li>Calculate error: <code>error = measured_distance - target_distance_center</code>.</li>
+            <li>Adjust motor PWM output and steering angle output using proportional gain coefficients.</li>
+            <li>If distance sensor is out of range (&lt; 10 cm or &gt; 150 cm), force motor to stop, center steering, and close eyelids.</li>
+            <li>Poll battery ADC. If voltage reads &lt; 6.4 V, disable motor, droop ears, center steering, and close eyelids to sleep.</li>
+          </ul>
+        </li>
+        <li><strong>Task 3: Watchdog Feed:</strong> Reset the coprocessor watchdog timer.</li>
+      </ul>
+
+      <h3>Error Handling &amp; Safe-State Strategy (Organic Sleep)</h3>
+      <p>
+        If the LPUART link between the MCU and the ESP32 drops for more than 3 seconds, or if the battery ADC reads below 6.4V, 
+        or if the ultrasonic sensor software timeout triggers (no updates for 250 ms), the MCXA153 enters the <code>SAFE_SHUTDOWN</code> state. 
+        The motor is immediately stopped, steering centers, the driver STBY line is pulled low, ears are drooped, and eyelids are closed completely to indicate the bunny is asleep.
+      </p>
+    </section>
+
+    <!-- SECTION 9 -->
+    <section id="tests" class="panel">
+      <h2>9. Test Cases and Acceptance Criteria</h2>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Related Req.</th>
+              <th>Tier</th>
+              <th>Test Type</th>
+              <th>Preconditions &amp; Setup Steps</th>
+              <th>Expected Result</th>
+              <th>Acceptance Criterion &amp; Evidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>TC-001</code></td>
+              <td><code>FR-001</code></td>
+              <td>Core</td>
+              <td>Inspection</td>
+              <td>1. Retrieve the hardware bill of materials.<br>2. Inspect the main board controller.</td>
+              <td>The controller board must be the NXP FRDM-MCXA153. Secondary boards are permitted.</td>
+              <td><strong>BOM confirmation:</strong> Physical board shows the MCXA153 MCU. Evidence: Photo of assembly.</td>
+            </tr>
+            <tr>
+              <td><code>TC-002</code></td>
+              <td><code>FR-003</code>, <code>FR-021</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Connect MCXA153 debug port to PC.<br>2. Apply power to the system.</td>
+              <td>MCU boots, prints "System Initialized" to the serial console, and opens eyelids within 1.0 s.</td>
+              <td><strong>Boot Wakefulness:</strong> Diagnostic console output prints complete init sequence. Eyelids fully open. Evidence: Serial log / video check.</td>
+            </tr>
+            <tr>
+              <td><code>TC-003</code></td>
+              <td><code>FR-007</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Connect ESP32 and MCXA153 UART lines.<br>2. Send test frames from ESP32.</td>
+              <td>The MCXA153 receives data with 0% byte corruption over a 5-minute test window.</td>
+              <td><strong>Comm Health:</strong> Zero framing errors in UART status registers. Evidence: Logic analyzer capture.</td>
+            </tr>
+            <tr>
+              <td><code>TC-004</code></td>
+              <td><code>FR-005</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Send mock JSON string to the ESP32.<br>2. Monitor parser output.</td>
+              <td>JSON parser successfully extracts servo angles and mood variables.</td>
+              <td><strong>Data Extraction:</strong> Parsed values match the input exactly. Evidence: ESP32 serial logs.</td>
+            </tr>
+            <tr>
+              <td><code>TC-005</code></td>
+              <td><code>FR-006</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Connect MAX98357A I2S DAC directly to the ESP32-S3 Nano.<br>2. Trigger audio playback.</td>
+              <td>The DAC receives direct digital audio frames from the ESP32 and drives the speaker.</td>
+              <td><strong>DAC Integrity:</strong> Sound is clean and continuous. Evidence: Audio waveform capture.</td>
+            </tr>
+            <tr>
+              <td><code>TC-006</code></td>
+              <td><code>FR-006</code></td>
+              <td>Core</td>
+              <td>Demo</td>
+              <td>1. Stream voice data to the ESP32-S3 Nano.<br>2. Measure audio volume.</td>
+              <td>Speech response is clearly audible and recognizable.</td>
+              <td><strong>Volume Check:</strong> Sound level &ge; 70 dBA at 1 meter. Evidence: Audio recording.</td>
+            </tr>
+            <tr>
+              <td><code>TC-007</code></td>
+              <td><code>FR-014</code>, <code>FR-021</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Disconnect the LPUART RX wire from the MCXA153.<br>2. Verify timing.</td>
+              <td>Ear servos return to center, steering centers, and eyelids close completely (asleep state) within 3.5 seconds.</td>
+              <td><strong>Watchdog sleep trigger:</strong> Eyelids close completely inside target watchdog threshold. Evidence: Timing capture log / video check.</td>
+            </tr>
+            <tr>
+              <td><code>TC-008</code></td>
+              <td><code>FR-009</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Suspend chassis in air.<br>2. Inject forward drive commands.</td>
+              <td>Motor spins in forward direction. Crank rotation occurs without mechanical binding or gear slipping.</td>
+              <td><strong>Crank Drive:</strong> Crank axle rotates smoothly under motor load. Evidence: Current draw measurement &le; 300 mA.</td>
+            </tr>
+            <tr>
+              <td><code>TC-009</code></td>
+              <td><code>FR-010</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Place obstacle at 50 cm distance.<br>2. Trigger sensor, read distance.</td>
+              <td>The calculated distance displays as 50 cm &plusmn; 2 cm.</td>
+              <td><strong>Sensor Accuracy:</strong> Measurement matches actual distance within 5%. Evidence: Tape measure vs log.</td>
+            </tr>
+            <tr>
+              <td><code>TC-010</code></td>
+              <td><code>FR-011</code>, <code>FR-022</code>, <code>FR-025</code></td>
+              <td>Recommended</td>
+              <td>Demo</td>
+              <td>1. Place robot on floor.<br>2. Position obstacle at 80 cm, then 20 cm.<br>3. Turn steering tail-skid.</td>
+              <td>Robot hops forward, steers left/right smoothly on command, and maintains target distance. Both legs hop in phase driven by single motor.</td>
+              <td><strong>Proportional Hopping &amp; Steering:</strong> Bunny turns dynamically and follows user safely. Evidence: Video of hopping motion turns.</td>
+            </tr>
+            <tr>
+              <td><code>TC-011</code></td>
+              <td><code>FR-008</code></td>
+              <td>Core</td>
+              <td>Demo</td>
+              <td>1. Send servo command for 45&deg; (drooped ears).<br>2. Measure servo PWM pulse width.</td>
+              <td>Servo sweeps to 45 degrees. The PWM signal width matches 1.25 ms.</td>
+              <td><strong>Servo sweeps:</strong> Position resolves to target within &plusmn; 5 degrees. Evidence: Scope pulse width.</td>
+            </tr>
+            <tr>
+              <td><code>TC-012</code></td>
+              <td><code>FR-012</code>, <code>FR-021</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Drop battery input source voltage below 6.4V.<br>2. Verify system response.</td>
+              <td>Motor disables immediately, ears droop, steering centers, and eyelids close completely to indicate sleep.</td>
+              <td><strong>Low Battery Sleep:</strong> Under-voltage event forces organic shutoff state. Evidence: Multimeter check / video check.</td>
+            </tr>
+            <tr>
+              <td><code>TC-013</code></td>
+              <td><code>FR-013</code>, <code>FR-021</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Actuate linkage and steering at full speed.<br>2. Press the emergency stop button.</td>
+              <td>DC motor PWM signal falls to 0%, steering centers, and eyelids close completely.</td>
+              <td><strong>Immediate Sleep Halt:</strong> Stop occurs and eyelids close within &le; 50 ms. Evidence: Logic analyzer capture / video.</td>
+            </tr>
+            <tr>
+              <td><code>TC-014</code></td>
+              <td><code>FR-015</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Send packet from ESP32 to MCXA153.<br>2. Measure delay to receive ACK on ESP32.</td>
+              <td>MCXA153 returns ACK byte. ESP32 receives it in &le; 100 ms.</td>
+              <td><strong>Software Acknowledgment:</strong> Comm is confirmed before next frame is dispatched. Evidence: Logic analyzer trace.</td>
+            </tr>
+            <tr>
+              <td><code>TC-015</code></td>
+              <td><code>FR-016</code>, <code>FR-021</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Run motor and steering.<br>2. Cut the ultrasonic sensor Echo wire.</td>
+              <td>MCXA153 software task triggers timeout, halts motor, centers steering, and closes eyelids within 250 ms.</td>
+              <td><strong>Sensor Timeout Sleep:</strong> Safe shutdown task disables PWM and closes eyelids in &le; 250 ms. Evidence: Log showing halt time.</td>
+            </tr>
+            <tr>
+              <td><code>TC-016</code></td>
+              <td><code>FR-017</code>, <code>FR-021</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Force Wi-Fi connection failure.<br>2. Connect smartphone to setup AP, send new SSID/Password.<br>3. Verify connection.</td>
+              <td>ESP32 boots into provisioning AP mode, and eyelids blink slowly to show configuration state. Once configured, eyelids open fully.</td>
+              <td><strong>Dynamic Wi-Fi Config:</strong> Portability test confirms credential storage. Eyelids convey searching/awake state. Evidence: NVS dump / connection logs.</td>
+            </tr>
+            <tr>
+              <td><code>TC-017</code></td>
+              <td><code>FR-018</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Save mock credentials to ESP32 NVS.<br>2. Hold setup button for 10 seconds at boot.<br>3. Read NVS partition.</td>
+              <td>Stored Wi-Fi network and cache records are formatted/erased. System boots to provisioning mode with eyelids closed during wipe.</td>
+              <td><strong>Data Wiping Verification:</strong> NVS check confirms all keys erased. Evidence: Debug logs.</td>
+            </tr>
+            <tr>
+              <td><code>TC-018</code></td>
+              <td><code>FR-020</code></td>
+              <td>Core</td>
+              <td>Test</td>
+              <td>1. Trigger TTS conversation playback.<br>2. Interrupt ESP32 execution immediately post-speech.<br>3. Inspect RAM buffer memory addresses.</td>
+              <td>RAM addresses corresponding to the text response string are filled with <code>0x00</code> bytes.</td>
+              <td><strong>RAM Data Cleansing:</strong> Target buffer memory shows complete zero-fill. Evidence: Memory debugger dump.</td>
+            </tr>
+            <tr>
+              <td><code>TC-019</code></td>
+              <td><code>FR-023</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Expose depleted battery (V < 7.0 V).<br>2. Plug 5V external source into USB-C shell port.<br>3. Measure battery charge cycle.</td>
+              <td>Charging current flows to balance charger, cells balance, and charging terminates when battery reads 8.4V &plusmn; 0.05V.</td>
+              <td><strong>Onboard Charging Health:</strong> Charge cycle runs to completion safely without battery removal. Evidence: Charger status log / voltmeter check.</td>
+            </tr>
+            <tr>
+              <td><code>TC-020</code></td>
+              <td><code>FR-025</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Input steering angles (+30&deg;, 0&deg;, -30&deg;) over UART.<br>2. Measure steering servo shaft rotation angle.</td>
+              <td>Servo shaft rotates to target steering angles &plusmn; 2 degrees. No binding in linkage rod.</td>
+              <td><strong>Active Steering Accuracy:</strong> Tail-skid alignment resolves matching target duty cycle. Evidence: Protractor measurement / video.</td>
+            </tr>
+            <tr>
+              <td><code>TC-021</code></td>
+              <td><code>FR-026</code></td>
+              <td>Recommended</td>
+              <td>Test</td>
+              <td>1. Power central DC motor to rotate shared double-crank axle.<br>2. Slow-motion capture the linkage phase.</td>
+              <td>Leg linkages pivot downward and align vertical (90 degrees relative to chassis), executing a gentle downward kick that lifts the body slightly off the floor (5 to 15 mm).</td>
+              <td><strong>90-Degree Kick Clearance:</strong> Linkage sweeps past 90 degrees to generate chassis lift. Evidence: Slow-motion video review.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 10 -->
+    <section id="traceability" class="panel">
+      <h2>10. Traceability Matrix</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>User Story</th>
+              <th>System Requirement</th>
+              <th>Test Case</th>
+              <th>Acceptance Criterion</th>
+              <th>Evidence Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>US-001</code> (Board Constraint)</td>
+              <td><code>FR-001</code> (Main Board)</td>
+              <td><code>TC-001</code></td>
+              <td>Main low-level controller is NXP FRDM-MCXA153. Secondary processors allowed.</td>
+              <td>Physical board label photography / BOM inspection.</td>
+            </tr>
+            <tr>
+              <td><code>US-002</code> (Portability Wi-Fi)</td>
+              <td><code>FR-002</code>, <code>FR-004</code>, <code>FR-017</code>, <code>NFR-007</code></td>
+              <td><code>TC-012</code>, <code>TC-016</code></td>
+              <td>ESP32-S3 Nano performs Wi-Fi connection handshake and supports AP configuration mode.</td>
+              <td>NVS credential dumps, AP setup portal screenshots, connection logs.</td>
+            </tr>
+            <tr>
+              <td><code>US-003</code> (User Data Protection)</td>
+              <td><code>FR-018</code>, <code>FR-020</code></td>
+              <td><code>TC-017</code>, <code>TC-018</code></td>
+              <td>Physical button wipes stored network keys; RAM buffers zeroed post-speech.</td>
+              <td>NVS state checks, memory dumps showing zero-fill.</td>
+            </tr>
+            <tr>
+              <td><code>US-004</code> (Communication Security)</td>
+              <td><code>FR-019</code>, <code>NFR-008</code></td>
+              <td>&mdash; (Network Check)</td>
+              <td>API links are TLS encrypted; session IDs are randomized/isolated.</td>
+              <td>API payload captures showing randomized UUIDs, Wireshark TLS validation.</td>
+            </tr>
+            <tr>
+              <td><code>US-005</code> (Physical Feedback / Eyelids)</td>
+              <td><code>FR-003</code>, <code>FR-008</code>, <code>FR-012</code>, <code>FR-013</code>, <code>FR-014</code>, <code>FR-016</code>, <code>FR-021</code>, <code>NFR-009</code></td>
+              <td><code>TC-002</code>, <code>TC-007</code>, <code>TC-011</code>, <code>TC-012</code>, <code>TC-013</code>, <code>TC-015</code></td>
+              <td>Eyelids open/close and ears sweep to reflect awake, searching, sleep, and mood states without status LEDs.</td>
+              <td>Video check of mechanical movements under test events, PWM scope captures.</td>
+            </tr>
+            <tr>
+              <td><code>US-006</code> (Power &amp; Dividers)</td>
+              <td><code>FR-012</code>, <code>NFR-003</code></td>
+              <td><code>TC-012</code></td>
+              <td>Voltage dividers/regulators protect inputs and power MCUs/sensors safely.</td>
+              <td>Schematic check, ADC calibration logs, voltmeter check.</td>
+            </tr>
+            <tr>
+              <td><code>US-007</code> (Hopping Leg System)</td>
+              <td><code>FR-009</code>, <code>FR-011</code>, <code>FR-022</code>, <code>NFR-004</code></td>
+              <td><code>TC-008</code>, <code>TC-010</code></td>
+              <td>Single central DC motor drives synchronized double-crank axle to hop both leg linkages in phase.</td>
+              <td>Video of forward/backward hopping motion, linkage layout drawing.</td>
+            </tr>
+            <tr>
+              <td><code>US-008</code> (3D Filaments &amp; Bearings)</td>
+              <td><code>NFR-004</code> (PETG for structural mounts and legs; MR85ZZ bearings)</td>
+              <td>&mdash; (Inspection)</td>
+              <td>Structural mounts and linkages are printed in PETG; pivot pins use ball bearings; feet use TPU damping pads.</td>
+              <td>Physical inspection of 3D prints, raw filament specs, bearing assembly photo.</td>
+            </tr>
+            <tr>
+              <td><code>US-009</code> (Spacious Enclosure &amp; USB Charging)</td>
+              <td><code>FR-023</code>, <code>FR-024</code>, <code>NFR-010</code></td>
+              <td><code>TC-019</code>, &mdash; (Inspection)</td>
+              <td>Spacious ventilated shell houses component density with magnetic latches. Integrates onboard USB-C balance charger and 2S BMS protection.</td>
+              <td>USB-C charging current profile trace, cell balancing voltage checks, shell dimension measurements.</td>
+            </tr>
+            <tr>
+              <td><code>US-010</code> (3D Sourcing Time Lock)</td>
+              <td><code>NFR-011</code> (CAD Sourcing Dependency)</td>
+              <td>&mdash; (Audit check)</td>
+              <td>100% of STL/STEP mechanical files are pre-designed and provided, or student models them in &le; 1 week of the 7-week timeline.</td>
+              <td>Verify files exist; verify CAD log shows &le; 1 week spent on design tasks.</td>
+            </tr>
+            <tr>
+              <td><code>US-011</code> (Hopping Steering Turns)</td>
+              <td><code>FR-025</code> (Steering control)</td>
+              <td><code>TC-020</code></td>
+              <td>Steering servo pivots the rear tail-skid to execute turns during hopping locomotion.</td>
+              <td>Visual inspection of steering linkage clearance, video check of motion turns.</td>
+            </tr>
+            <tr>
+              <td><code>US-013</code> (90-Degree Kick Locomotion)</td>
+              <td><code>FR-026</code> (Rotary leg kick)</td>
+              <td><code>TC-021</code></td>
+              <td>Leg linkage sweeps to 90 degrees to perform a downward push against the floor, lifting the body.</td>
+              <td>Slow-motion video of hopping kick action, verifying ground clearance.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 11 -->
+    <section id="risks" class="panel">
+      <h2>11. Assumptions and Risk Register</h2>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Severity</th>
+              <th>Impact</th>
+              <th>Mitigation Action</th>
+              <th>Approval Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>R-001</code></td>
+              <td>Voltage / Power</td>
+              <td>Inductive voltage spikes when DC motor starts or stalls cause logic voltage to dip, resetting the MCXA153.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Separate independent regulators power MCU and motor.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-002</code></td>
+              <td>Safety</td>
+              <td>If the distance sensor fails or Echo pin disconnects, the control loop registers 0 cm or max distance, driving the motor indefinitely.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Software timeout task (FR-016) halts motor, centers steering, droops ears, and closes eyelids if Echo hangs for 250 ms.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-003</code></td>
+              <td>Mechanical Linkages</td>
+              <td>Brittle linkage joints printed in PLA fatigue or fracture under the mechanical impact of the hopping motion.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Linkages and structural plates printed strictly in PETG (NFR-004), and feet use TPU damping pads.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-004</code></td>
+              <td>Electrical</td>
+              <td>Motor draws high currents during starting or stalls, causing packet loss on the UART serial line.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Implemented software confirmation (ACK) of the UART message (FR-015) assuring packet delivery.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-005</code></td>
+              <td>Electrical</td>
+              <td>Omission of resistor voltage dividers or regulators on 5V sensor feedback or power lines connected to 3.3V MCXA153 inputs.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Logic interface and power compatibility are achieved through either voltage dividers or regulators.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-006</code></td>
+              <td>Acoustic</td>
+              <td>Direct audio output via I2S from the ESP32-S3 Nano generates digital noise on the LPUART lines.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>Negligible</td>
+              <td><strong>Checked/Confirmed:</strong> Crosstalk is prevented by physical routing: LPUART and I2S traces run in opposite directions, utilizing isolated copper wires.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-007</code></td>
+              <td>Privacy / Leakage</td>
+              <td>Stored Wi-Fi keys or cached conversation logs of User A are retrieved or extracted by User B during multi-user testing.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Wiping routine (FR-018), active RAM zero-filling (FR-020), randomized session IDs (FR-019), and TLS encryption. Eyelids close during formatting to signify system reset.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-008</code></td>
+              <td>Mechanical Control</td>
+              <td>High friction in 3D printed linkage pivot joints or phase drift between left and right legs causes motor stall or tipping over.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Low-friction bearings (MR85ZZ) at pivots and a shared mechanical axle (FR-022) rotated by a single motor to keep legs locked in phase.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-009</code></td>
+              <td>Battery Charging Safety</td>
+              <td>2S LiPo battery thermal runaway, cell imbalance, or fire hazard during onboard USB charging.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Integrates a 2S balance charger circuit (FR-023) and a dedicated 2S BMS protection board (NFR-010) inside the ventilated shell to balance and protect cells.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-010</code></td>
+              <td>Thermal Heat</td>
+              <td>High density of components inside the closed shell generates thermal accumulation, leading to chip throttling or reset.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> PLA body shell (FR-024) is designed with multiple passive airflow ventilation grilles.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-011</code></td>
+              <td>Mechanical CAD Sourcing</td>
+              <td>Learning complex 3D CAD design software (e.g. Blender) from scratch to design linkages and shell consumes vital project time, threatening the 7-week summer school delivery.</td>
+              <td><span class="badge badge-recommended">Medium</span></td>
+              <td>Moderate</td>
+              <td><strong>Mitigation Action &amp; Disclaimer:</strong> Sourcing pre-designed template files (STL/STEP) is highly recommended. If custom 3D model design is required, the student must strictly timebox and limit CAD learning and modeling to a maximum of 1 week (NFR-011).</td>
+              <td><strong>Yes (Human Sign-off)</strong></td>
+            </tr>
+            <tr>
+              <td><code>R-012</code></td>
+              <td>Steering Jamming</td>
+              <td>Mechanical interference between the steerable rear tail-skid and the main structural body shell block wheels/legs rotation during turns.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Steering linkage is fully enclosed and cleared within the spacious PLA shell bounds, designed with mechanical clearances &ge; 10 mm.</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td><code>R-013</code></td>
+              <td>Landing Mechanical Shock</td>
+              <td>Rigid mechanical leg links transmit peak ground forces directly to the TT gear motor output shaft, stripping plastic/metal gears and fracturing PETG brackets.</td>
+              <td><span class="badge badge-could">Low</span></td>
+              <td>None (Fully Mitigated)</td>
+              <td><strong>Checked/Confirmed:</strong> Jointed PETG legs with flexible TPU landing pads absorb impact shock. Mechanical design generates a gentle, low-amplitude hop trajectory (5 to 15 mm lift) to minimize ground forces. Mechanical alignment ensures the 90-degree kick is synchronized between left and right legs to prevent tipping.</td>
+              <td>No</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 12 -->
+    <section id="review" class="panel">
+      <h2>12. Human Review Checklist</h2>
+      <p>
+        The student team and course instructors must complete and sign off on this checklist before flashing firmware or wiring actuators.
+      </p>
+      
+      <div class="table-container">
+        <table class="checklist-table">
+          <thead>
+            <tr>
+              <th style="width: 50px; text-align: center;">Status</th>
+              <th>Review Item Description</th>
+              <th>Checked By</th>
+              <th>Comments / Action Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-1"></td>
+              <td><label for="chk-1" class="checkbox-label"><strong>Platform Lock Check:</strong> Verify if FRDM-MCXA153 is used for low-level control. Approve secondary boards if justified.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-2"></td>
+              <td><label for="chk-2" class="checkbox-label"><strong>Audio Routing:</strong> Confirm MAX98357A I2S DAC is wired directly to the ESP32-S3 Nano, and that no audio is sent to the MCXA153.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-3"></td>
+              <td><label for="chk-3" class="checkbox-label"><strong>Voltage Compatibility:</strong> Validate separate regulators power the MCU and motor, and logic dividers/regulators are used for all digital endpoints.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-4"></td>
+              <td><label for="chk-4" class="checkbox-label"><strong>3D Filaments &amp; Linkages:</strong> Confirm structural linkage components and mounts are printed strictly in PETG; landing pads use TPU; pivot pins use MR85ZZ bearings.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-a"></td>
+              <td><label for="chk-a" class="checkbox-label"><strong>Leg Phase Synchronization:</strong> Verify that left and right leg linkage systems utilize a shared mechanical synchronization axle (FR-022) driven by the single central DC motor.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-f"></td>
+              <td><label for="chk-f" class="checkbox-label"><strong>90-Degree Kick Clearance &amp; Trajectory:</strong> Verify CAD templates configure a gentle, low-amplitude hop trajectory (5 to 15 mm lift) to protect linkages and prevent tipping (FR-026).</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-b"></td>
+              <td><label for="chk-b" class="checkbox-label"><strong>Spacious Body Shell &amp; Vents:</strong> Inspect the PLA outer shell dimensions (~180x120x120 mm) to confirm wiring clearance, ventilation grilles, and magnetic latches.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-c"></td>
+              <td><label for="chk-c" class="checkbox-label"><strong>USB-C Charging Safety:</strong> Confirm that the onboard 2S balance charger module (FR-023) and 2S BMS protection board (NFR-010) are active and balance cells correctly during charging.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-d"></td>
+              <td><label for="chk-d" class="checkbox-label"><strong>3D CAD Assets &amp; Timeline buffer:</strong> Verify that 3D model files (STL/STEP) are sourced, or that the student strictly timeboxes custom design to a maximum of 1 week (NFR-011) of the 7-week schedule.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-e"></td>
+              <td><label for="chk-e" class="checkbox-label"><strong>Hopping Steering Control:</strong> Review and verify the mechanical steering linkage clearance and steering servo PWM functionality (FR-025).</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-5"></td>
+              <td><label for="chk-5" class="checkbox-label"><strong>UART Handshake ACK:</strong> Verify firmware implements UART confirmation checks to assure command delivery.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-6"></td>
+              <td><label for="chk-6" class="checkbox-label"><strong>Dynamic Wi-Fi Reconnection:</strong> Verify that Wi-Fi provisioning mode is functional and stores credentials correctly to NVS for portability.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-7"></td>
+              <td><label for="chk-7" class="checkbox-label"><strong>User Privacy Protections:</strong> Confirm NVS data wiping (10s hold), RAM zero-filling, and HTTPS/TLS encryption are active to prevent privacy leaks.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-8"></td>
+              <td><label for="chk-8" class="checkbox-label"><strong>Eyelid Organic Status (No LEDs):</strong> Verify status LEDs are completely removed. Ensure eyelid servo (FR-021) and ear gestures express awake, search, sleep, and privacy modes cleanly.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-9"></td>
+              <td><label for="chk-9" class="checkbox-label"><strong>Distance Software Fail-Safe:</strong> Review and verify the 250 ms distance sensor software timeout stops motor and closes eyelids.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-10"></td>
+              <td><label for="chk-10" class="checkbox-label"><strong>Memory Budget:</strong> Review MCXA153 code size and verify static variables and buffers fit within the 28 KB SRAM limits.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td style="text-align: center;"><input type="checkbox" class="checkbox-custom" id="chk-11"></td>
+              <td><label for="chk-11" class="checkbox-label"><strong>Test Plan:</strong> Confirm all Must functional requirements trace to a corresponding test case with defined evidence.</label></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 13 -->
+    <section id="bom" class="panel">
+      <h2>13. Bill of Materials (BOM)</h2>
+      <p>
+        Physical components, hardware logic chips, mechanical parts, and electrical wiring components required to assemble the Mecha-Iepurele mobile-hopping model.
+      </p>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Component Name</th>
+              <th>Details &amp; Key Specifications</th>
+              <th>Qty</th>
+              <th>Suggested Source / Part #</th>
+              <th>Purpose in System</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Controllers</strong></td>
+              <td>NXP FRDM-MCXA153</td>
+              <td>Central low-level processor dev board; Cortex-M33, 96KB Flash, 32KB SRAM.</td>
+              <td>1</td>
+              <td>NXP / FRDM-MCXA153</td>
+              <td>Executes superloop, runs motor PWM, servo PWM, steering control, and battery ADC.</td>
+            </tr>
+            <tr>
+              <td><strong>Coprocessors</strong></td>
+              <td>ESP32-S3 Nano</td>
+              <td>Dual-core Xtensa LX7, Wi-Fi 2.4 GHz &amp; BLE 5, NVS flash memory.</td>
+              <td>1</td>
+              <td>Arduino / ESP32-S3 Nano</td>
+              <td>Handles Wi-Fi, HTTPS cloud AI API parsing, JSON handling, and Direct I2S audio rendering.</td>
+            </tr>
+            <tr>
+              <td><strong>Audio</strong></td>
+              <td>MAX98357A I2S DAC</td>
+              <td>3.2W Class D mono audio amplifier with direct digital I2S input.</td>
+              <td>1</td>
+              <td>Adafruit / MAX98357A</td>
+              <td>Decodes digital audio samples from the ESP32 and directly drives the speaker.</td>
+            </tr>
+            <tr>
+              <td><strong>Audio</strong></td>
+              <td>Dynamic Speaker</td>
+              <td>8 &Omega; impedance, 2 W power rating, mini dimensions for head integration.</td>
+              <td>1</td>
+              <td>Generic / 8 Ohm 2W Mini</td>
+              <td>Renders conversational TTS voice responses.</td>
+            </tr>
+            <tr>
+              <td><strong>Actuators</strong></td>
+              <td>SG90 Micro Servo</td>
+              <td>Plastic gear analog servo, 9g weight, 1.6 kg-cm torque at 4.8V.</td>
+              <td>4</td>
+              <td>TowerPro / SG90</td>
+              <td>Acts as mechanical drivers: 2x for ears, 1x for eyelids, 1x for steering tail-skid.</td>
+            </tr>
+            <tr>
+              <td><strong>Actuators</strong></td>
+              <td>High-Torque TT Motor</td>
+              <td>DC Gear motor; 1:120 or 1:220 gear-reduction, metal output shaft recommended.</td>
+              <td>1</td>
+              <td>Generic / Metal-Gear TT Motor</td>
+              <td>Drives the shared double-crank axle for hopping locomotion.</td>
+            </tr>
+            <tr>
+              <td><strong>Actuator Drivers</strong></td>
+              <td>TB6612FNG Driver</td>
+              <td>Dual-channel H-bridge motor driver; 1.2A continuous current per channel, standby pin.</td>
+              <td>1</td>
+              <td>SparkFun / TB6612FNG</td>
+              <td>Translates MCU PWM speed and direction signals into raw power for the DC TT motor.</td>
+            </tr>
+            <tr>
+              <td><strong>Sensors</strong></td>
+              <td>Ultrasonic Sensor</td>
+              <td>RCWL-1601 or HC-SR04P; 3.3V compatible operating voltage, Trigger/Echo GPIO pins.</td>
+              <td>1</td>
+              <td>Generic / RCWL-1601</td>
+              <td>Measures distance of user for proactive following (30-50 cm window).</td>
+            </tr>
+            <tr>
+              <td><strong>Power</strong></td>
+              <td>LiPo Battery Pack</td>
+              <td>2S battery pack; 7.4V nominal (8.4V max), capacity &ge; 1500 mAh recommended.</td>
+              <td>1</td>
+              <td>Generic / 2S 7.4V LiPo</td>
+              <td>Primary system power source.</td>
+            </tr>
+            <tr>
+              <td><strong>Power</strong></td>
+              <td>Dual Voltage Regulators</td>
+              <td>1x Regulator outputting 5.0V / 3.3V (digital logic); 1x outputting 5.0V / 6.0V (motor/servos).</td>
+              <td>2</td>
+              <td>Generic Buck / LDO Regulators</td>
+              <td>Isolates noisy motor power rail from sensitive microcontrollers.</td>
+            </tr>
+            <tr>
+              <td><strong>Power (Charging)</strong></td>
+              <td>2S Balance Charger Module</td>
+              <td>2S LiPo balance charging board; input USB-C (5V), output 8.4V with cell balancing.</td>
+              <td>1</td>
+              <td>Generic / IP2326 or TP5100 2S</td>
+              <td>Enables onboard balancing and charging of the 2S LiPo battery pack via USB-C.</td>
+            </tr>
+            <tr>
+              <td><strong>Power (Safety)</strong></td>
+              <td>2S BMS Protection Board</td>
+              <td>8.4V LiPo battery management board; cell overcharge, over-discharge, and overcurrent protection.</td>
+              <td>1</td>
+              <td>Generic / 2S 3A BMS</td>
+              <td>Ensures battery safety boundaries are enforced, cutting output if V &le; 6.0V.</td>
+            </tr>
+            <tr>
+              <td><strong>Power (Interface)</strong></td>
+              <td>USB-C Extension Cable</td>
+              <td>Panel-mount USB-C female to USB-C male extension cable (short length).</td>
+              <td>1</td>
+              <td>Generic / Panel USB-C Extension</td>
+              <td>Exposes the internal balance charger port flush to the outer shell.</td>
+            </tr>
+            <tr>
+              <td><strong>Hardware (Pivots)</strong></td>
+              <td>MR85ZZ Ball Bearing</td>
+              <td>Miniature deep groove ball bearing; 5mm ID, 8mm OD, 2.5mm width. Shielded.</td>
+              <td>8-12</td>
+              <td>Generic / MR85ZZ</td>
+              <td>Provides low-friction rotation at all hopping linkage pivot pins, preventing motor stalls.</td>
+            </tr>
+            <tr>
+              <td><strong>Hardware (Fasteners)</strong></td>
+              <td>M3 Screw &amp; Nut Suite</td>
+              <td>M3 button-head hex socket screws (10mm, 15mm, 20mm), M3 nylon locknuts, washers.</td>
+              <td>1 pack</td>
+              <td>Generic / M3 Fastener Kit</td>
+              <td>Assembles leg linkages, structural mounts, and chassis framework.</td>
+            </tr>
+            <tr>
+              <td><strong>Hardware (Latches)</strong></td>
+              <td>Neodymium Magnets</td>
+              <td>Mini circular rare-earth magnets; 4mm diameter, 2mm thickness.</td>
+              <td>8-12</td>
+              <td>Generic / 4x2mm Magnet</td>
+              <td>Enables secure, toolless quick-release latching of the body shell.</td>
+            </tr>
+            <tr>
+              <td><strong>Hardware (Steering)</strong></td>
+              <td>Steering Linkage Kit</td>
+              <td>Micro pushrods, ball-joint linkages, and control horns.</td>
+              <td>1</td>
+              <td>Generic / Steering Rod Set</td>
+              <td>Translates steering servo rotation into physical pivoting of the tail-skid.</td>
+            </tr>
+            <tr>
+              <td><strong>Electrical Protections</strong></td>
+              <td>Resistor Suite</td>
+              <td>1/4W metal film resistors (10 k&Omega;, 4.7 k&Omega;, 1 k&Omega;, 2.2 k&Omega;, etc.).</td>
+              <td>1 pack</td>
+              <td>Generic / Resistor Assortment</td>
+              <td>Creates the 10k/4.7k battery ADC divider and logic protection dividers.</td>
+            </tr>
+            <tr>
+              <td><strong>Wiring</strong></td>
+              <td>Shielded Copper Wire</td>
+              <td>Insulated multi-strand copper wire; thin shielding jacket.</td>
+              <td>1 roll</td>
+              <td>Generic / Shielded Hookup Wire</td>
+              <td>Connects UART/I2S lines in opposite routing paths to prevent crosstalk noise.</td>
+            </tr>
+            <tr>
+              <td><strong>Mechanical Shells</strong></td>
+              <td>TPU 3D Filament</td>
+              <td>Thermoplastic Polyurethane flexible filament; Shore hardness ~95A.</td>
+              <td>~100g</td>
+              <td>Generic / TPU Filament 1.75mm</td>
+              <td>3D prints shock-absorbing landing feet traction pads and flexible dampers.</td>
+            </tr>
+            <tr>
+              <td><strong>Mechanical Shells</strong></td>
+              <td>PETG 3D Filament</td>
+              <td>Polyethylene Terephthalate Glycol tough filament; high impact/bending strength.</td>
+              <td>~300g</td>
+              <td>Generic / PETG Filament 1.75mm</td>
+              <td>3D prints leg linkages, motor brackets, steering brackets, and main chassis structural plates (Sourced Files / Custom).</td>
+            </tr>
+            <tr>
+              <td><strong>Mechanical Shells</strong></td>
+              <td>PLA 3D Filament</td>
+              <td>Polylactic Acid easy-to-print rigid filament.</td>
+              <td>~300g</td>
+              <td>Generic / PLA Filament 1.75mm</td>
+              <td>3D prints decorative non-stress components: spacious body shell (~180x120x120 mm) and head (Sourced Files / Custom).</td>
+            </tr>
+          </tbody>
+          
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 14 -->
+    <section id="status" class="panel" style="margin-bottom: 0;">
+      <h2>14. Final Status</h2>
+      <div style="margin-bottom: 20px;">
+        <span class="badge" style="background: var(--gradient-accent); color: #fff; font-size: 13px; padding: 8px 18px; border-radius: var(--radius-sm);">READY FOR HUMAN REVIEW</span>
+      </div>
+      
+      <p><strong>Status Summary:</strong></p>
+      <ul>
+        <li>The system specification package compiles all user facts and the updated scoping guidelines into clear, verifiable requirements.</li>
+        <li>Direct-drive audio rendering is mapped exclusively to the ESP32-S3 Nano, preventing any audio buffering overhead or parsing latency on the MCXA153.</li>
+        <li>The electrical design utilizes a single shared battery pack, with separate independent regulators for logic and motor paths, and protective dividers/regulators for signals.</li>
+        <li>Filaments for 3D printed components are optimized, designating tough PETG strictly for structural mounts.</li>
+        <li>A software-based UART acknowledgment (ACK) handshake is formally defined to assure command packets reach their destination securely.</li>
+        <li>A software distance sensor watchdog task halts the DC motor and closes eyelids within 250 ms in the event of sensor disconnection.</li>
+        <li>Crosstalk concerns between digital I2S and LPUART are eliminated through isolated copper wires and opposite trace routing paths.</li>
+        <li>The platform constraint is flexible, allowing a dual-board configuration where the FRDM-MCXA153 acts as the low-level controller and the ESP32-S3 Nano acts as the high-level coprocessor.</li>
+        <li>Dynamic Wi-Fi provisioning is implemented (FR-017 / TC-016) using an Access Point setup mode and NVS to assure dynamic reconnection.</li>
+        <li>Robust privacy-enhancing mechanisms (FR-018, FR-019, FR-020, NFR-008, R-007) are integrated to prevent Wi-Fi credential leakage or conversation profile exposure between test users.</li>
+        <li>All status LEDs have been completely removed. Status feedback (wakefulness, searching, sleeping, errors) is expressed organically through physical eyelid servo controls (FR-021) and ear gesture sweeps. Eyelids close completely to suggest the bunny is asleep.</li>
+        <li>The locomotion system has been updated to a hopping leg linkage mechanism driven by **1x central high-torque DC gear motor**. Both leg linkages are physically pinned to a shared double-crank axle (FR-022) to maintain perfect phase lock and prevent tipping over. Miniature ball bearings (MR85ZZ) prevent joint binding, and TPU landing pads absorb impact shock.</li>
+        <li>The physical bunny shell (FR-024) is designed as a spacious, ventilated enclosure (length ~180mm, width ~120mm, height ~120mm) to house the high density of internal components, incorporating magnetic quick-release latches for toolless debugging.</li>
+        <li>The power subsystem incorporates a panel-mounted USB-C port, an onboard **2S balance charger module** (FR-023, TP5100/IP2326), and a **2S BMS board** (NFR-010, R-009) to charge and balance the battery cells safely without removal from the shell.</li>
+        <li>A mechanical CAD dependency disclaimer (NFR-011, R-011, chk-d) has been formalised: Sourcing pre-designed mechanical templates (STL/STEP) is highly recommended. If custom 3D model design is required, the student has a strict maximum budget of 1 week of the 7-week schedule to learn CAD tools (e.g. Blender) and design the parts.</li>
+        <li>An active steering subsystem (FR-025, TC-020, R-012, chk-e) has been added: An SG90 steering servo pivots a rear tail-skid assembly left/right by &plusmn; 30 degrees, allowing the hopping bunny chassis to take motion turns smoothly while maintaining main leg axle synchronization.</li>
+        <li><strong>Rotary 90-degree kick locomotion with gentle trajectory (FR-026, TC-021, R-013, chk-f) has been defined:</strong> Rather than a telescopic piston guide, the legs act as jointed levers. As the motor rotates the shared axle, the legs sweep downward. When they pass through the 90-degree vertical position relative to the chassis, they execute a gentle downward push against the floor, launching the entire body slightly off the ground (5 to 15 mm vertical lift) to initiate a low-amplitude, stable forward scoot/hop. TPU pads on the feet absorb the landing impact, keeping fabrication simple and protecting components.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>
