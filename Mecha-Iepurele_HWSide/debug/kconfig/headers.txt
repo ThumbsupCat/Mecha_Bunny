@@ -1,0 +1,1 @@
+/home/bnuy/Desktop/Mecha-Iepurele/Mecha-Iepurele_HWSide/debug/mcux_config.h

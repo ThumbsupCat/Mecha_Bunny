@@ -1,0 +1,1 @@
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/debug/mcux_config.h

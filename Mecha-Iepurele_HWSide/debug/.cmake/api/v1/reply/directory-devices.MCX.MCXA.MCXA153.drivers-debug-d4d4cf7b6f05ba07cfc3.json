@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "devices/MCX/MCXA/MCXA153/drivers",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/devices/MCX/MCXA/MCXA153/drivers"
+	}
+}

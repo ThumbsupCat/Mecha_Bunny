@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "components/IS42SM16800H",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/components/IS42SM16800H"
+	}
+}

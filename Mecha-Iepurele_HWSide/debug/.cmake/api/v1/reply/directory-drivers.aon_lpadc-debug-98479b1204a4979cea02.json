@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "drivers/aon_lpadc",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/aon_lpadc"
+	}
+}

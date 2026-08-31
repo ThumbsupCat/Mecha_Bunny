@@ -1,0 +1,5 @@
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/devices/MCX/MCXA/MCXA153/drivers/fsl_clock.h:539:20:CLOCK_EnableClock	32	static
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/devices/MCX/MCXA/MCXA153/drivers/fsl_reset.h:204:20:RESET_ReleasePeripheralReset	16	static
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/port/fsl_port.h:360:20:PORT_SetPinConfig	32	static
+/home/bnuy/Desktop/Mecha-Iepurele/Mecha-Iepurele_HWSide/frdmmcxa153/led_blinky/pin_mux.c:39:6:BOARD_InitBootPins	8	static
+/home/bnuy/Desktop/Mecha-Iepurele/Mecha-Iepurele_HWSide/frdmmcxa153/led_blinky/pin_mux.c:62:6:BOARD_InitPins	16	static

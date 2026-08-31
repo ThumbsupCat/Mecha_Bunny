@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded Project Scoping Brief - Mecha-Iepurele</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary: #38bdf8;
+            --secondary: #a855f7;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #334155;
+            --gradient: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-primary { background-color: rgba(56, 189, 248, 0.15); color: var(--primary); border: 1px solid var(--primary); }
+        .badge-success { background-color: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .badge-warning { background-color: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-danger { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .card-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem 0;
+            position: relative;
+            padding-left: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            bottom: 0.2rem;
+            width: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        li::before {
+            content: '•';
+            color: var(--primary);
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: rgba(30, 41, 59, 0.8);
+            color: var(--text-primary);
+            font-weight: 600;
+            padding: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .highlight-text {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .ambition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .ambition-card {
+            border-top: 4px solid var(--border);
+        }
+
+        .ambition-card.core { border-top-color: var(--success); }
+        .ambition-card.recommended { border-top-color: var(--primary); }
+        .ambition-card.advanced { border-top-color: var(--secondary); }
+
+        .ambition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .ambition-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .ambition-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .risk-list h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .risk-item {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #0f172a;
+                padding: 0;
+                max-width: 100%;
+            }
+            .card, .ambition-card, .table-container, .risk-item {
+                background-color: #ffffff;
+                border: 1px solid #cbd5e1;
+                box-shadow: none;
+                color: #0f172a;
+                page-break-inside: avoid;
+            }
+            h1, h2, h3, h4, th, .highlight-text, .ambition-title {
+                color: #0f172a !important;
+                -webkit-text-fill-color: initial !important;
+                background: none !important;
+            }
+            .subtitle, .card-title, td, .ambition-desc, .section-desc {
+                color: #475569 !important;
+            }
+            .badge {
+                border: 1px solid #475569 !important;
+                background: none !important;
+                color: #0f172a !important;
+            }
+            footer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>Mecha-Iepurele (Mechanized Bunny)</h1>
+                <p class="subtitle">Embedded Project Scoping Brief & Feasibility Report</p>
+            </div>
+            <div>
+                <span class="badge badge-success">Readiness: Ready with Assumptions</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Meta Details Block -->
+    <div class="meta-grid">
+        <div class="card">
+            <div class="card-title">Fixed Target Board</div>
+            <div class="card-value">FRDM-MCXA153</div>
+            <span class="badge badge-primary" style="margin-top: 0.5rem; font-size: 0.7rem;">NXP MCXA153 MCU</span>
+        </div>
+        <div class="card-title-container card">
+            <div class="card-title">Co-Processor (WiFi)</div>
+            <div class="card-value">ESP32 Suite</div>
+            <span class="badge badge-primary" style="margin-top: 0.5rem; font-size: 0.7rem;">UART Interface</span>
+        </div>
+        <div class="card">
+            <div class="card-title">Intended Audience</div>
+            <div class="card-value">3rd-Year CS Students</div>
+            <span class="badge badge-success" style="margin-top: 0.5rem; font-size: 0.7rem;">Summer School</span>
+        </div>
+        <div class="card">
+            <div class="card-title">Recommended Scope</div>
+            <div class="card-value">Recommended Tier</div>
+            <span class="badge badge-warning" style="margin-top: 0.5rem; font-size: 0.7rem;">Advanced level</span>
+        </div>
+    </div>
+
+    <!-- Project Overview -->
+    <section>
+        <h2>Project Overview</h2>
+        <p class="section-desc">A high-level summary of the Mechanized Bunny project, its main objectives, and core behavior.</p>
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">Main Objective</div>
+                <p>Build an interactive robotic companion bunny that uses the NXP FRDM-MCXA153 for local sensory-motor control and emotional expressions, paired with an ESP32 co-processor to connect to a cloud conversational AI API (answering questions and detecting sentiment/mood).</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Operating Environment</div>
+                <p>Indoor flat surfaces (e.g., classroom tables, lab benches, or smooth floors) with active Wi-Fi connectivity. The bunny must actively track and follow the user while responding.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Ambition Tiers -->
+    <section>
+        <h2>Project Ambition Tiers</h2>
+        <p class="section-desc">Proposed tiers to balance beginner learning constraints with ambitious student achievements.</p>
+        <div class="ambition-grid">
+            <!-- Core -->
+            <div class="card ambition-card core">
+                <div class="ambition-header">
+                    <span class="ambition-title">Core Student Version</span>
+                    <span class="badge badge-success">Intermediate</span>
+                </div>
+                <p class="ambition-desc">A static desktop companion bunny focused on basic networking, serial communication, and simple UI rendering.</p>
+                <div style="font-size: 0.9rem;">
+                    <strong>Features:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>UART-based ESP32 commands</li>
+                        <li>Wi-Fi connection to simple REST API</li>
+                        <li>Text query input via Serial Console</li>
+                        <li>OLED display showing text and mood tags</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem; font-style: italic; color: var(--text-secondary);">Suitable: Focuses purely on software protocols without robotics overhead.</p>
+                </div>
+            </div>
+            <!-- Recommended -->
+            <div class="card ambition-card recommended">
+                <div class="ambition-header">
+                    <span class="ambition-title">Recommended Version</span>
+                    <span class="badge badge-primary">Advanced</span>
+                </div>
+                <p class="ambition-desc">A mobile, responsive robot that tracks the user and physically wiggles its ears based on conversation sentiment.</p>
+                <div style="font-size: 0.9rem;">
+                    <strong>Features:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>Differential drive DC motors + driver</li>
+                        <li>Ultrasonic sensors to follow user</li>
+                        <li>PWM-driven servos for wiggling ears</li>
+                        <li>ESP32 hosts smartphone web page input</li>
+                        <li>Animated pixel-art expressions on OLED</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem; font-style: italic; color: var(--text-secondary);">Suitable: Balanced robotics demo combining control loops and web integrations.</p>
+                </div>
+            </div>
+            <!-- Advanced -->
+            <div class="card ambition-card advanced">
+                <div class="ambition-header">
+                    <span class="ambition-title">Advanced Extension</span>
+                    <span class="badge badge-danger">Advanced+</span>
+                </div>
+                <p class="ambition-desc">An autonomous, voice-activated companion using camera tracking and localized speech streaming.</p>
+                <div style="font-size: 0.9rem;">
+                    <strong>Features:</strong>
+                    <ul style="margin-top: 0.5rem;">
+                        <li>MEMS microphone audio stream (I2S)</li>
+                        <li>Speech-to-Text and TTS via Speaker (I2S)</li>
+                        <li>ESP32-CAM or HuskyLens face tracking</li>
+                        <li>Local TinyML wake word recognition</li>
+                        <li>LiPo power with charger/gauge circuits</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem; font-style: italic; color: var(--text-secondary);">Suitable: Optional stretch goal for highly capable students.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Hardware Specifications -->
+    <section>
+        <h2>Target Hardware Specifications</h2>
+        <p class="section-desc">Key physical components, interfaces, and integration details using generic MCU pin capabilities.</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 25%;">Component</th>
+                        <th style="width: 30%;">Purpose</th>
+                        <th style="width: 20%;">Interface Type</th>
+                        <th style="width: 10%;">Version</th>
+                        <th style="width: 15%;">Voltage & Risks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="highlight-text">NXP FRDM-MCXA153</td>
+                        <td>Main microcontroller board. Handles sensor reading, motor driving, and OLED drawing.</td>
+                        <td>Main Platform</td>
+                        <td>Core</td>
+                        <td>3.3 V Logic</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">ESP32 Wi-Fi Module</td>
+                        <td>Queries cloud-based conversational API, manages Wi-Fi, and serves smartphone Web UI.</td>
+                        <td>UART (TX/RX)</td>
+                        <td>Core</td>
+                        <td>3.3 V; Requires high peak currents during Wi-Fi tx</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">OLED Display (SSD1306)</td>
+                        <td>Renders conversational text and facial pixel art based on API mood tags.</td>
+                        <td>I2C (SDA/SCL)</td>
+                        <td>Core</td>
+                        <td>3.3 V</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">DC Motors & Motor Driver (TB6612FNG)</td>
+                        <td>Drives wheels for following behavior. TB6612FNG provides high efficiency over L298N.</td>
+                        <td>PWM (Speed) + GPIO (Direction)</td>
+                        <td>Recommended</td>
+                        <td>Logic 3.3 V; Motor 5-9 V external battery</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">Ultrasonic Distance Sensor (RCWL-1601)</td>
+                        <td>Measures user proximity to follow or back away.</td>
+                        <td>GPIO (Trigger/Echo)</td>
+                        <td>Recommended</td>
+                        <td>3.3 V (RCWL-1601 is native 3.3 V)</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">Micro Servos (SG90)</td>
+                        <td>Physically wiggles/droops the bunny ears to mimic mood.</td>
+                        <td>PWM-capable pins</td>
+                        <td>Recommended</td>
+                        <td>Requires 5 V supply; 3.3 V logic signal is okay</td>
+                    </tr>
+                    <tr>
+                        <td class="highlight-text">I2S Audio Setup (INMP441 + MAX98357A)</td>
+                        <td>Captures user voice and plays back speech audio from the API.</td>
+                        <td>I2S</td>
+                        <td>Advanced</td>
+                        <td>3.3 V. Needs DMA buffering to avoid timing issues.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Engineering Assumptions & Open Questions -->
+    <section>
+        <div class="grid-2col">
+            <div>
+                <h2>Key Scoping Assumptions</h2>
+                <p class="section-desc">Assumptions made to ensure feasibility within a summer school timeframe.</p>
+                <div class="card" style="margin-bottom: 1rem;">
+                    <strong>A-001: Web-assisted Conversation</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        Instead of direct audio processing on the MCXA153, the user types or speaks to a web app served by the ESP32. The ESP32 handles Web-to-API communication. (Reduces RAM requirements).
+                    </p>
+                </div>
+                <div class="card" style="margin-bottom: 1rem;">
+                    <strong>A-002: Structured JSON API</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        The cloud API returns a simple, small JSON object containing pre-processed reply text and discrete mood tags, bypassing stream parsing complexity.
+                    </p>
+                </div>
+                <div class="card">
+                    <strong>A-003: Custom ESP32 Firmware</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        The ESP32 runs custom Arduino/ESP-IDF code to offload Wi-Fi/HTTPS logic, acting as an intelligent bridge to MCXA153 rather than relying on complex serial AT command sets.
+                    </p>
+                </div>
+            </div>
+            <div>
+                <h2>Critical Open Questions</h2>
+                <p class="section-desc">Key design questions that require developer or instructor confirmation.</p>
+                <div class="card" style="margin-bottom: 1rem;">
+                    <strong>Q-001: Audio Interface Requirements</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        Is direct voice recognition/speech playback on the physical bunny a hard requirement, or is the smartphone web UI interface sufficient? (Crucial for hardware cost and complexity).
+                    </p>
+                </div>
+                <div class="card" style="margin-bottom: 1rem;">
+                    <strong>Q-002: User-Following Modality</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        Are simple ultrasonic/IR tracking sensors acceptable, or do we need camera-based color/face tracking?
+                    </p>
+                </div>
+                <div class="card">
+                    <strong>Q-003: Physical Chassis & Mechanism</strong>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                        What are the physical constraints of the chassis? Are 3D-printed parts provided, and what is the weight limit for servo/motor sizing?
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Analysis -->
+    <section>
+        <h2>Technical Risks & Risk Controls</h2>
+        <p class="section-desc">Identified project risks and mitigation strategies for student developers.</p>
+        <div class="risk-list">
+            <div class="risk-item">
+                <h4><span class="badge badge-danger">Power</span> MCU resets/brownouts due to shared power</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">DC motors and servo motors draw significant current spikes that can drop supply lines, resetting the MCXA153. Mitigate by using separate power regulators/batteries for logic and motors, with a shared common ground, and placing decoupling capacitors near the motor driver.</p>
+            </div>
+            <div class="risk-item">
+                <h4><span class="badge badge-danger">Voltage</span> 5V and 3.3V Logic Level Incompatibilities</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">Many hobbyist sensors (HC-SR04) and motor drivers operate on 5V. Connecting their output pins directly to the FRDM-MCXA153 will damage the MCU. Mitigate by using 3.3V native components (like the RCWL-1601) or placing resistor dividers/level shifters on all signals entering the MCU.</p>
+            </div>
+            <div class="risk-item">
+                <h4><span class="badge badge-warning">Memory</span> SRAM limits on MCXA153 (32 KB)</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">The MCXA153 has limited RAM. Parsing long sentences, holding audio buffers, or processing images locally is impossible. Mitigate by executing all NLP, voice-to-text, and image tracking on the ESP32 or in the cloud, passing only brief JSON text to the MCU.</p>
+            </div>
+            <div class="risk-item">
+                <h4><span class="badge badge-warning">Timing</span> Blocked control loops during Wi-Fi querying</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">If the MCU blocks waiting for the UART response from the ESP32, the motor control loop will freeze, causing the bunny to crash. Mitigate by implementing non-blocking UART interrupts or ring buffers, and using a state machine for motor navigation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Software Context -->
+    <section>
+        <h2>Software Context & Developer Setup</h2>
+        <p class="section-desc">SDK, IDE, and codebase recommendations for the development team.</p>
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">Development Environment</div>
+                <p><strong>IDE:</strong> MCUXpresso VS Code Edition or MCUXpresso IDE.<br>
+                <strong>Language:</strong> C<br>
+                <strong>SDK Components:</strong> fsl_lpuart (UART), fsl_i2c (OLED/Sensors), fsl_tpm/ftm (PWM servos and motor driver).</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Starting Point Strategy</div>
+                <p>Start by executing the <em>lpuart_interrupt</em> SDK example to ensure reliable, non-blocking serial communication with the ESP32. Set up the pin routes in NXP's Pin Tool, prioritizing generic pin configurations before finalizing layout.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Handoff to Agent 1 -->
+    <section style="margin-bottom: 4rem;">
+        <h2>Handoff to Agent 1 (Requirements Engineering)</h2>
+        <div class="card" style="border: 2px solid var(--success); background-color: rgba(16, 185, 129, 0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <span style="font-size: 1.25rem; font-weight: 700; color: var(--success);">Handoff Status: READY FOR REQUIREMENTS</span>
+                <span class="badge badge-success">Passes Scope Filters</span>
+            </div>
+            <p style="font-size: 0.95rem; margin-bottom: 1rem;">
+                This scoping brief is ready for handoff to the <strong>Requirements Engineering Assistant Agent (Agent 1)</strong>. The project goals, platform rules, and tiered system ambition successfully frame the project space. Agent 1 should construct detailed specifications prioritizing the <strong>Recommended Version</strong> (mobile bunny with web-assisted chat and servo ear expressions) while including the static Core Version as a fallback checkpoint.
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                <strong>Handoff Details:</strong>
+                <ul style="margin-top: 0.5rem;">
+                    <li><strong>Recommended Next Agent:</strong> Requirements Engineering Assistant Agent</li>
+                    <li><strong>Recommended Target Focus:</strong> Recommended Version (Level: Advanced, Student Suitability: Suitable with Simplification)</li>
+                    <li><strong>Logic Level Verification Required:</strong> 3.3 V check on all selected sensors/drivers</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Generated by Agent 0: Embedded Project Idea Scoping Agent | Version 2.2</p>
+        <p style="margin-top: 0.25rem; font-size: 0.75rem; opacity: 0.7;">Embedded Engineering and Gen AI Summer School</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "drivers/queued_spi",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/queued_spi"
+	}
+}

@@ -1,0 +1,9 @@
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/devices/MCX/MCXA/MCXA153/drivers/fsl_clock.h:539:20:CLOCK_EnableClock	32	static
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/devices/MCX/MCXA/MCXA153/drivers/fsl_reset.h:204:20:RESET_ReleasePeripheralReset	16	static
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/lpuart/fsl_lpuart.h:827:23:LPUART_ReadByte	32	static
+/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/port/fsl_port.h:463:20:PORT_SetPinMux	24	static
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/hello_world.c:46:13:Init_LPUART2_Peripheral	40	static
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/hello_world.c:83:17:LPUART2_SendString	16	static
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/hello_world.c:88:13:LPUART2_ReceiveLine	40	static
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/hello_world.c:134:12:ParseJsonIntField	32	static
+/home/bnuy/Desktop/Mecha-Iepurele/UART-test_MCXA153/hello_world.c:162:5:main	424	static

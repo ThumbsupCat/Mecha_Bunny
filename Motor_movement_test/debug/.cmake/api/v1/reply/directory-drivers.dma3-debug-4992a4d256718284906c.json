@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "drivers/dma3",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/dma3"
+	}
+}

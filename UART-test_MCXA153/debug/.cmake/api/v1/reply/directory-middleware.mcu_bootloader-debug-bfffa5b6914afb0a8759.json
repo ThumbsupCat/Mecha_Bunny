@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "middleware/mcu_bootloader",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/middleware/mcu_bootloader"
+	}
+}

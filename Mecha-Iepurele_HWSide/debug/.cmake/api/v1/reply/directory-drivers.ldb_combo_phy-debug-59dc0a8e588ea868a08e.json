@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "drivers/ldb_combo_phy",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/drivers/ldb_combo_phy"
+	}
+}

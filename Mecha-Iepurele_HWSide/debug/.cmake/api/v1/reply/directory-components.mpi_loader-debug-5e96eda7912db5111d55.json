@@ -1,0 +1,19 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "components/mpi_loader",
+		"source" : "/home/bnuy/Desktop/mcusdk/mcuxsdk/mcuxsdk/components/mpi_loader"
+	}
+}
