@@ -290,7 +290,6 @@ Generic FRDM-MCXA153 capability only - exact pin requires board pinout and datas
 
 ### 3.5 Signal Diagrams and Measurements
 
-- `TODO: Add PWM signal capture oscilloscope trace (50 Hz servo & 10 kHz motor PWM).`
 - `TODO: Add ultrasonic sensor Trigger and Echo signal capture.`
 - `TODO: Add LPUART serial debug capture showing ACK packet transmission.`
 - `TODO: Add power rail voltage measurement during motor startup and leg kick.`
@@ -618,6 +617,45 @@ Discuss:
 - what would be improved in a future version;
 - how Gen AI helped or failed to help.
 ```
+
+What was learned:
+  - Finding different approaches in transferring the data in an embedded environment with strict memory limitations
+  - How to run different electronic components in a circuit.
+  - How to correctly test every HW/SW integration by using a modular approach
+
+What worked well:
+  - Including all the features in different project workspaces to isolate SW bugs
+  - The main functions that are being controlled by the microcontrollers worked flawlessly
+
+What was difficult:
+  - The microphone addition proved as a challenge due to my lack of knowledge in these modules,
+it required me to also analyze the audio sample several times
+  - The PWM section on MCUXpresso Config Tools is pretty hard to understand and I kept it in the source code
+  - The API call for the OpenAI Whisper STT wasn't working initially to SSL handshake issues being extremely strict
+on who accesses this API.
+
+What would be improved in a future version:
+  - I would like to include a more organic interaction by adding eyelids as a HW/SW feature.
+  - Adding a model that can understand a person's mood by its voice (local)
+  - Adding an easier battery charging by using a TP5100
+  - I want to add 2 more microphones for distinguishing front and back
+
+How Gen AI helped or failed to help:
+  - Helped me with several initial configurations like I2S, and PWM. I had to edit them afterwards for fine tuning.
+  - It failed in understanding the main issue regarding the audio samples recorded, being extremely loud and distorted
+because it provided me with a configuration that didn't match. I analyzed the sound using external software like Audacity.
+  - Initially, it couldn't provide me with a long-term setup for the audio sampling. SPIFFS proved to be having extreme
+downsides regarding overheads (disk writting). Managed to replace with PSRAM, which is more suited for this scope.
+  - It helped me building each test suite and worked on troubleshooting. I managed to provide data by troubleshooting the
+physical side of the project by using a multimeter.
+  - Helped me with double checking the respective wirings and schematic notations.
+  - It failed to merge the components that have been done in different workspaces. I decided to run this approach to isolate
+the issues and manage to fix them in no time.
+
+In the end, by working with Gen AI, I have realised that it can enhance any user's ability, but what matters is the level
+of that certain user in the scope of the project. Since I had some experience in Embedded projects and low-level programming,
+it was easy for me to understand the issues really fast and find a solution. Some problems required a human review, and I provided
+it with on-spot solutions.
 
 ---
 
