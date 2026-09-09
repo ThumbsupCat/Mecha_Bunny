@@ -684,7 +684,7 @@ Final Presentaion: `TODO`
 ## 11. Project Journal
 
 | Date | Work Completed | Problems / Risks | Next Steps |
-|---|---|---|---|---|
+|---|---|---|---|
 | 27-07-2026 | Components arrived | - | Planning Schematic |
 | 06-08-2026 | Physical tests ran on standalone components | - | Soldering A and B channels (left and right wheels) |
 | 17-08-2026 | Chassis Print and mounting it with the motors | - | Building the first level (motors + driver module + spot for battery |
