@@ -672,17 +672,27 @@ TODO: Add links or attach:
 - demo video;
 - final presentation.
 ```
+- The Schematic files can be found in the Mecha-Iepurele folder
+- The _SWSide can be built and ran on an ESP-IDF environment. The _HWSide can be built on MCUXpresso environment.
+- The Test cases and suites for checking the HW integrity can be used. Be sure to respect the pinout.
+
+Demo video: `TODO`
+Final Presentaion: `TODO`
 
 ---
 
 ## 11. Project Journal
 
-| Date | Work Completed | Problems / Risks | Next Steps | Author |
+| Date | Work Completed | Problems / Risks | Next Steps |
 |---|---|---|---|---|
-| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
-| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
-| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
-| `TODO` | `TODO` | `TODO` | `TODO` | `TODO` |
+| 27-07-2026 | Components arrived | - | Planning Schematic |
+| 06-08-2026 | Physical tests ran on standalone components | - | Soldering A and B channels (left and right wheels) |
+| 17-08-2026 | Chassis Print and mounting it with the motors | - | Building the first level (motors + driver module + spot for battery |
+| 20-08-2026 | Soldering first level done | The setup can't be tested in this state | Pulling the data signal wires from the driver module for testing |
+| 23-08-2026 | Schematic Draft added | The pinout for the data signals may suffer changes | Testing initial pinout choices |
+| 01-09-2026 | MCXA153 motor movement test | Risk removed, the motors work according to their channel | Movement definitions need to be added |
+| 06-09-2026 | ESP32-S3 Nano microphone integration and STT | None | API call to LLM needs to be sent by using the specific transcript from STT |
+| 09-09-2026 | README and documentation updated to match status | May not be final version | - |
 
 ---
 
@@ -707,9 +717,8 @@ TODO: Add links or attach:
 
 ### Learning Resources
 
-- TODO: Course/lab notes for Embedded Engineering and Gen AI Summer School.
-- TODO: Proportional control loop tutorials for autonomous mobile tracking.
-- TODO: Mechanical 3D printing guidelines for PETG, TPU, and PLA materials.
+- Course/lab notes for Embedded Engineering and Gen AI Summer School: https://alexp25.github.io/ipcei-lab/
+- Mechanical 3D printing guidelines for PETG and PLA materials. https://ultimaker.com/learn/petg-vs-pla-vs-abs-3d-printing-strength-comparison/
 
 ---
 
