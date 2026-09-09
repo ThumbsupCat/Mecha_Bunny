@@ -8,7 +8,7 @@
 
 ## 1. Introduction
 
-Mecha-Iepurele (Mechanized Bunny) is an interactive, moving robotic companion designed for indoor flat surfaces (classroom, table, or smooth floor). The robot engages in natural conversations with humans via a cloud-based Conversational AI API and physically tracks and follows the user. High-level network operations (Wi-Fi connectivity, HTTPS API transactions, JSON payload parsing, and direct Text-to-Speech audio rendering via an I2S DAC) are offloaded to an ESP32 coprocessor suite (ESP32-S3 Nano), while low-level motor control loops, servo ear and eyelid movements, active steering, battery monitoring, and sensor processing are managed by the main microcontroller board.
+Mecha-Iepurele (Mechanized Bunny) is an interactive, moving robotic companion designed for indoor flat surfaces (classroom, table, or smooth floor). The robot engages in natural conversations with humans via a cloud-based Conversational AI API and physically tracks and follows the user. High-level network operations (Wi-Fi connectivity, HTTPS API transactions, JSON payload parsing, and direct Text-to-Speech audio rendering via an I2S DAC) are offloaded to an ESP32 coprocessor suite (ESP32-S3 Nano), while low-level motor control loops, servo ear, active steering, battery monitoring, and sensor processing are managed by the main microcontroller board.
 
 The purpose of this project is to create an engaging physical robotic companion that bridges low-level embedded hardware (sensors, motor drivers, PWM actuators, power management) with cloud-based artificial intelligence. The project originated from a concept for a mechanized bunny that talks to users, mimics emotional expressions based on conversation mood, and follows the user.
 
@@ -26,12 +26,12 @@ The **NXP FRDM-MCXA153 board featuring the NXP MCXA153 MCU** is selected as the 
 
 - **Project Name:** Mecha-Iepurele (Mechanized Bunny)
 - **Author / Student Team:** TODO: Add Student Author(s) Name(s) and Student ID(s)
-- **Short Summary:** An interactive, moving mechanized bunny robot that communicates with a human via an AI API (over ESP32 Wi-Fi) and mimics emotional expressions using physical movement (ear sweeps and eyelid states).
+- **Short Summary:** An interactive, moving mechanized bunny robot that communicates with a human via an AI API (over ESP32 Wi-Fi) and mimics emotional expressions using physical movement (ear sweeps states).
 - **Main Objective:** Build a robotic companion that uses a FRDM-MCXA153 board for local sensor-motor control and expressions, and an ESP32-S3 Nano for Wi-Fi connection to a cloud conversational AI API that provides responses and mood data.
 - **Intended Users:** Third-year university Computer Science students and summer school reviewers/instructors.
 - **Operating Environment:** Indoor flat surfaces (classroom, laboratory table, or smooth floor) with active Wi-Fi connectivity.
-- **Selected Scope:** Recommended Summer School Version featuring mobile hopping locomotion via a single central DC motor driving a double-crank axle, active steering via a rear tail-skid servo, ear and eyelid expression servos, ultrasonic user tracking, direct I2S TTS voice output on the ESP32, and onboard USB-C 2S LiPo balance charging.
-- **Main Behavior:** Upon boot, the bunny initializes peripherals and connects to Wi-Fi. When user conversation is triggered, the ESP32 queries the cloud AI API, receives text response and mood data, and streams TTS voice output through an I2S DAC/speaker. The ESP32 sends servo targets to the MCXA153 via UART (with ACK confirmation). The MCXA153 updates ear servos (drooping for sad, perking for happy) and eyelid state. Concurrently, a 50 ms motor control loop reads an ultrasonic sensor to track user distance (maintaining 30–50 cm) and drives the central hopping DC motor and steering tail-skid servo to follow the user smoothly.
+- **Selected Scope:** Recommended Summer School Version featuring mobile hopping locomotion via a single central DC motor driving a double-crank axle, active steering via a rear tail-skid servo, ear expression servos, ultrasonic user tracking, direct I2S TTS voice output on the ESP32, and onboard USB-C 2S LiPo balance charging.
+- **Main Behavior:** Upon boot, the bunny initializes peripherals and connects to Wi-Fi. When user conversation is triggered, the ESP32 queries the cloud AI API, receives text response and mood data, and streams TTS voice output through an I2S DAC/speaker. The ESP32 sends servo targets to the MCXA153 via UART (with ACK confirmation). The MCXA153 updates ear servos (drooping for sad, perking for happy) state. Concurrently, a 50 ms motor control loop reads an ultrasonic sensor to track user distance (maintaining 30–50 cm) and drives the central hopping DC motor and steering tail-skid servo to follow the user smoothly.
 - **Inputs:**
   - Ultrasonic distance sensor (RCWL-1601 / HC-SR04P, 3.3V compatible) measuring user distance.
   - Tactile physical buttons (setup / Wi-Fi provisioning / emergency stop).
@@ -39,39 +39,38 @@ The **NXP FRDM-MCXA153 board featuring the NXP MCXA153 MCU** is selected as the 
   - Battery voltage diagnostic signal via resistor divider to ADC.
 - **Outputs:**
   - 1x Central high-torque DC TT gear motor (via TB6612FNG H-bridge driver) for 90-degree kick hopping locomotion.
-  - 4x SG90 Micro Servos (2x ears, 1x eyelids, 1x rear steering tail-skid).
+  - 4x SG90 Micro Servos (2x ears, 1x rear steering tail-skid).
   - MAX98357A I2S Audio DAC + 8 Ohm 2W speaker (driven directly by ESP32-S3 Nano).
-  - Eyelids organic state feedback (open = awake, slow blink = Wi-Fi searching, closed = asleep/low battery).
 - **Out-of-Scope Items:**
   - On-board execution of heavy Large Language Models (LLMs) or local Speech-to-Text on the MCXA153.
   - High-speed navigation on rough terrain or stairs.
   - Complex multi-obstacle collision avoidance beyond tracking the primary user.
   - Custom cloud backend hosting (standard pre-existing HTTP REST AI endpoints are assumed).
-  - Status LEDs (all status feedback is expressed organically through physical ear and eyelid movements).
+  - Status LEDs (all status feedback is expressed organically through physical ear movements).
   - OLED screen displays and local web input pages (in the speech TTS direct-drive edition).
 
 ### 2.2 Feature Tiers
 
 | Tier | Description | Main Features | Extra Components | Main Risks | Suitability |
 |---|---|---|---|---|---|
-| **Core** | Static Ear/Eyelid desktop prototype in shell | ESP32-S3 Nano Wi-Fi handshake, queries mock/REST API, direct TTS audio via I2S MAX98357A DAC, MCXA153 drives 2x ear servos and 1x eyelid servo, NVS data wiping, UART ACK comms | ESP32-S3 Nano, MAX98357A DAC + Speaker, 2x Ear Servos, 1x Eyelid Servo, 3D Printed Shell & Brackets | UART framing errors, Wi-Fi handshake timeout, API parsing failure | **High suitability:** Focuses on serial comms, basic GPIO, and PWM servo control. Realistic for early development. |
-| **Recommended** | Mobile Speech Companion (Selected Target Scope) | All Core features plus differential hopping leg linkage (1x central DC TT motor + H-bridge) executing gentle 90-degree kicks, active steering rear tail-skid, ultrasonic distance tracking (30–50 cm window), 50 ms motor loop, battery ADC monitoring (<6.4V sleep), 2S LiPo balance charging via USB-C port, magnetic quick-release ventilated shell | 1x DC TT Motor, TB6612FNG Driver, 3.3V Ultrasonic Sensor, 2S LiPo Battery & BMS, 2S USB-C Balance Charger Module, 4x Servos (Ears, Eyelids, Steering), USB-C Panel Cable, MR85ZZ Bearings, PETG/TPU Filaments | Mechanical binding, leg joint wear, high component density heat, ground impact shock, battery over-discharge | **Good with guidance:** Combines PWM, control loops, mechanical kinematics, power isolation, and safety. Excellent depth. |
+| **Core** | Static Ear desktop prototype in shell | ESP32-S3 Nano Wi-Fi handshake, queries mock/REST API, direct TTS audio via I2S MAX98357A DAC, MCXA153 drives 2x ear servos, NVS data wiping, UART ACK comms | ESP32-S3 Nano, MAX98357A DAC + Speaker, 2x Ear Servos, 3D Printed Shell & Brackets | UART framing errors, Wi-Fi handshake timeout, API parsing failure | **High suitability:** Focuses on serial comms, basic GPIO, and PWM servo control. Realistic for early development. |
+| **Recommended** | Mobile Speech Companion (Selected Target Scope) | All Core features plus differential hopping leg linkage (1x central DC TT motor + H-bridge) executing gentle 90-degree kicks, active steering rear tail-skid, ultrasonic distance tracking (30–50 cm window), 50 ms motor loop, battery ADC monitoring (<6.4V sleep), 2S LiPo balance charging via USB-C port, magnetic quick-release ventilated shell | 1x DC TT Motor, TB6612FNG Driver, 3.3V Ultrasonic Sensor, 2S LiPo Battery & BMS, 2S USB-C Balance Charger Module, 4x Servos (Ears, Steering), USB-C Panel Cable, MR85ZZ Bearings, PETG/TPU Filaments | Mechanical binding, leg joint wear, high component density heat, ground impact shock, battery over-discharge | **Good with guidance:** Combines PWM, control loops, mechanical kinematics, power isolation, and safety. Excellent depth. |
 | **Advanced** | Voice-Input Speech Companion | All Recommended features plus local I2S MEMS microphone (INMP441) on ESP32-S3 Nano for voice command streaming, wake-word detection / TinyML keyword spotting, local fuel gauge | INMP441 I2S MEMS Mic, LiPo Fuel Gauge IC, Camera module (ESP32-CAM / HuskyLens) | Acoustic feedback loops, double-buffered I2S timing, high power draw, memory limits | **Low (Optional extension):** Suitable only as a capstone extension for advanced teams due to time limits. |
 
 ### 2.3 Scenarios
 
 | ID | Scenario | Description |
 |---|---|---|
-| `SC-001` | Startup / Setup | Device powers on. MCXA153 initializes GPIOs, LPUART, ADC, and PWM timers. ESP32-S3 Nano reads Wi-Fi credentials from NVS and connects to Wi-Fi. Upon successful connection, ESP32 sends "Online" byte over UART. MCXA153 opens eyelids and sweeps ears to neutral to confirm awake state. |
-| `SC-002` | Dynamic Wi-Fi Provisioning | If Wi-Fi fails within 15 seconds or setup button is held for 5 seconds at boot, ESP32 launches an Access Point setup portal. Eyelids blink slowly to indicate search state. User connects via smartphone, submits credentials, and ESP32 connects and opens eyelids. |
-| `SC-003` | Multi-User Device Wiping | Tester A finishes testing. Tester A holds setup button for 10 seconds. ESP32 erases all stored Wi-Fi credentials, tokens, and caches from NVS, reboots, sweeps ears to neutral, and closes eyelids to sleep. |
-| `SC-004` | Onboard Battery Charging | When battery drops below 6.4V, MCXA153 halts motors and closes eyelids. User plugs standard 5V USB-C cable into shell port. Integrated 2S balance charger charges cells to 8.4V. Eyelids remain closed during charging. |
-| `SC-005` | Normal Operation & Speech Playback | Conversation is triggered. ESP32 queries Cloud AI REST API, receives JSON (response text, mood tag, servo angles), extracts servo targets, and requests TTS audio stream. ESP32 renders audio via I2S to MAX98357A DAC. Eyelids remain open. |
+| `SC-001` | Startup / Setup | Device powers on. MCXA153 initializes GPIOs, LPUART, ADC, and PWM timers. ESP32-S3 Nano reads Wi-Fi credentials from NVS and connects to Wi-Fi. Upon successful connection, ESP32 sends "Online" byte over UART. MCXA153 sweeps ears to neutral to confirm awake state. |
+| `SC-002` | Dynamic Wi-Fi Provisioning | If Wi-Fi fails within 15 seconds or setup button is held for 5 seconds at boot, ESP32 launches an Access Point setup portal. Ears move slowly to indicate search state. User connects via smartphone, submits credentials, and ESP32 connects and the ears showing attention state. |
+| `SC-003` | Multi-User Device Wiping | Tester A finishes testing. Tester A holds setup button for 10 seconds. ESP32 erases all stored Wi-Fi credentials, tokens, and caches from NVS, reboots, sweeps ears to neutral to sleep. |
+| `SC-004` | Onboard Battery Charging | When battery drops below 6.4V, MCXA153 halts motors. User plugs standard 5V USB-C cable into shell port. Integrated 2S balance charger charges cells to 8.4V. |
+| `SC-005` | Normal Operation & Speech Playback | Conversation is triggered. ESP32 queries Cloud AI REST API, receives JSON (response text, mood tag, servo angles), extracts servo targets, and requests TTS audio stream. ESP32 renders audio via I2S to MAX98357A DAC. |
 | `SC-006` | Active Privacy Cleansing | Speech playback completes. ESP32 immediately fills audio buffers and text RAM strings with zeros (`0x00`). Subsequent API calls use a newly generated, isolated session UUID to prevent user profiling. |
-| `SC-007` | Actuator Expression Control | ESP32 sends parsed servo angles and mood data over LPUART to MCXA153. MCXA153 updates FTM/TPM PWM registers, driving ear servos to sweep to target angles (drooping for sad, perking for happy) while keeping eyelids open. |
+| `SC-007` | Actuator Expression Control | ESP32 sends parsed servo angles and mood data over LPUART to MCXA153. MCXA153 updates FTM/TPM PWM registers, driving ear servos to sweep to target angles (drooping for sad, perking for happy). |
 | `SC-008` | Distance Sensor Processing | MCXA153 runs a periodic 50 ms motor loop. It triggers the ultrasonic sensor with a 10 us pulse, measures Echo pin return duration, and calculates distance in centimeters. |
 | `SC-009` | Proximity Hopping & Steering | User is detected at 80 cm, offset right. MCXA153 drives central DC motor via PWM. Shared double-crank axle sweeps leg linkages past 90 degrees vertical, executing a gentle downward shove that hops chassis forward. Simultaneously, steering servo pivots rear tail-skid right for a smooth turn, slowing down as distance reaches 30–50 cm window. |
-| `SC-010` | Safety & Reliability (Sleep Halt) | Emergency stop button is pressed, sensor Echo hangs >250 ms, or battery falls <6.4V. MCXA153 forces motor PWM to 0%, pulls motor driver STBY low, centers steering servo, droops ears, and closes eyelids to asleep state. |
+| `SC-010` | Safety & Reliability (Sleep Halt) | Emergency stop button is pressed, sensor Echo hangs >250 ms, or battery falls <6.4V. MCXA153 forces motor PWM to 0%, pulls motor driver STBY low, centers steering servo, droops ears to asleep state. |
 
 ### 2.4 User Stories
 
@@ -81,7 +80,7 @@ The **NXP FRDM-MCXA153 board featuring the NXP MCXA153 MCU** is selected as the 
 | `US-002` | As a user, I need the bunny to dynamically connect to different Wi-Fi networks using a setup mode, so that I can easily bring the companion to new environments. |
 | `US-003` | As a tester, I need to easily wipe my Wi-Fi credentials and conversation logs from the device, so that my personal network keys and private voice contents are not exposed to subsequent testers. |
 | `US-004` | As a tester, I need the communication to be encrypted and my conversation session ID to be isolated, so that my conversations cannot be intercepted on local Wi-Fi or linked to other testers' profiles. |
-| `US-005` | As a user, I need the bunny to convey its state of sleep and activity through physical movements of the ears and eyelids, so that it looks like an organic creature without unnatural flashing LEDs. |
+| `US-005` | As a user, I need the bunny to convey its state of sleep and activity through physical movements of the ears, so that it looks like an organic creature without unnatural flashing LEDs. |
 | `US-006` | As a developer, I need to power the motors and microcontrollers from a single large LiPo battery with separate regulators, so that logic circuitry is fully isolated from motor transients. |
 | `US-007` | As a user, I want the bunny to move by hopping like a real rabbit, utilizing a robust leg linkage system that avoids binding, joint wear, and synchronization failures. |
 | `US-008` | As a builder, I need structural mounts and leg linkages printed with PETG filament and low-friction bearings, so that the hopping mechanism has high toughness and structural durability. |
@@ -102,7 +101,7 @@ flowchart LR
     UC2((Provision Wi-Fi Credentials))
     UC3((Trigger Conversation Session))
     UC4((Query Cloud AI & Stream TTS))
-    UC5((Animate Ear & Eyelid Expressions))
+    UC5((Animate Ear Expressions))
     UC6((Track User & Proportional Hop))
     UC7((Pivot Rear Steering Tail-Skid))
     UC8((Trigger Organic Sleep / Halt))
@@ -169,7 +168,6 @@ flowchart TD
         US_SENS["Ultrasonic Distance Sensor (RCWL-1601)"]
         EAR_L["Left Ear Servo (SG90)"]
         EAR_R["Right Ear Servo (SG90)"]
-        EYELID["Eyelid Servo (SG90)"]
         STEER["Rear Steering Servo (SG90)"]
         TB6612["TB6612FNG H-Bridge Motor Driver"]
         DCMOTOR["Central DC TT Gear Motor"]
@@ -187,7 +185,6 @@ flowchart TD
     REG_MOTOR -.->|5V/6V Power| DAC
     REG_MOTOR -.->|5V/6V Power| EAR_L
     REG_MOTOR -.->|5V/6V Power| EAR_R
-    REG_MOTOR -.->|5V/6V Power| EYELID
     REG_MOTOR -.->|5V/6V Power| STEER
     REG_MOTOR -.->|5V/6V Power| TB6612
 
@@ -201,7 +198,6 @@ flowchart TD
     ESTOP --> GPIO_CTRL
     PWM_TIMERS --> EAR_L
     PWM_TIMERS --> EAR_R
-    PWM_TIMERS --> EYELID
     PWM_TIMERS --> STEER
     PWM_TIMERS --> TB6612
     GPIO_CTRL --> TB6612
@@ -231,7 +227,7 @@ flowchart TD
 | 2 | ESP32-S3 Nano | 1 | Core | Wi-Fi coprocessor, HTTPS API client, JSON parser, I2S audio renderer, NVS storage | LPUART, I2S, Wi-Fi | 3.3 V Logic; Powered via regulated 3.3V rail | Confirm NVS data wiping and 115200 baud UART link. |
 | 3 | MAX98357A I2S DAC | 1 | Core | Direct digital audio decoding and amplification for voice TTS output | I2S (BCLK, LRCK, DIN) | Powered via 5V rail; 3.3V I2S logic from ESP32 | Audio noise from power ripples; route I2S away from UART. |
 | 4 | Dynamic Speaker (8 Ohm, 2W) | 1 | Core | Voice TTS output speaker | Direct wire to DAC | Driven by MAX98357A DAC output | Ensure secure mounting inside head/body shell. |
-| 5 | SG90 Micro Servos | 4 | Core / Rec | Physical actuators: 2x Ears, 1x Eyelids, 1x Rear Steering Tail-skid | FTM/TPM PWM (50 Hz) | 5V Power rail; 3.3V PWM control logic | Current spikes during stall can reset MCU; use dedicated 5V regulator. |
+| 5 | SG90 Micro Servos | 4 | Core / Rec | Physical actuators: 2x Ears, 1x Rear Steering Tail-skid | FTM/TPM PWM (50 Hz) | 5V Power rail; 3.3V PWM control logic | Current spikes during stall can reset MCU; use dedicated 5V regulator. |
 | 6 | High-Torque DC TT Gear Motor | 1 | Recommended | Drives shared double-crank axle for 90-degree kick hopping locomotion | PWM + 2x GPIO (TB6612) | Powered via 5V-6V motor regulator rail | Inductive noise spikes; require freewheeling diodes & decoupling. |
 | 7 | TB6612FNG H-Bridge Motor Driver | 1 | Recommended | Controls speed and direction of central DC gear motor | PWM, 2x GPIO, STBY pin | VM 5V-6V, VCC 3.3V logic | Verify STBY pin default low for safe shutdown. |
 | 8 | Ultrasonic Distance Sensor (RCWL-1601) | 1 | Recommended | Measures distance to user (30-50 cm window) for proportional following | GPIO Trigger / Echo Capture | 3.3V Power & Logic | Sensor timeout hang; software 250ms watchdog required. |
@@ -252,14 +248,14 @@ flowchart TD
 
 The Mecha-Iepurele hardware architecture is organized around a dual-processor design to isolate real-time motor and sensor control from network latency:
 
-- **Main Controller (NXP FRDM-MCXA153):** Serves as the central low-level executive. It runs a deterministic 50 ms superloop that handles PWM generation for 4x SG90 servos (left ear, right ear, eyelids, rear steering tail-skid), PWM speed and direction control for the central DC motor via the TB6612FNG H-bridge, GPIO pulse timing for the ultrasonic distance sensor, ADC voltage sampling for battery diagnostic monitoring, and UART packet parsing with ACK generation.
+- **Main Controller (NXP FRDM-MCXA153):** Serves as the central low-level executive. It runs a deterministic 50 ms superloop that handles PWM generation for 4x SG90 servos (left ear, right ear, , rear steering tail-skid), PWM speed and direction control for the central DC motor via the TB6612FNG H-bridge, GPIO pulse timing for the ultrasonic distance sensor, ADC voltage sampling for battery diagnostic monitoring, and UART packet parsing with ACK generation.
 - **Coprocessor (ESP32-S3 Nano):** Manages all high-level Wi-Fi communications, TLS encryption, REST API transactions with the cloud AI endpoint, JSON response extraction, NVS credential storage/wiping, and direct I2S digital audio decoding to the MAX98357A DAC.
 - **Power Architecture:** Powered by a single 2S LiPo battery pack (7.4V nominal, 8.4V max). Safety boundaries are enforced by a 2S BMS protection board that disconnects power if overall pack voltage drops to 6.0V (3.0V per cell) or current exceeds 4A. Two independent voltage regulators are fed from the BMS output: a 3.3V logic regulator powers the MCXA153, ESP32-S3 Nano, and ultrasonic sensor; a separate 5.0V/6.0V high-current regulator powers the TB6612FNG motor driver, 4x SG90 servos, and MAX98357A audio DAC. Battery voltage is monitored via a 10k / 4.7k resistor voltage divider connected to an ADC pin on the MCXA153 (delivering <= 2.68V at fully charged 8.4V). Onboard balance charging is achieved via an IP2326 or TP5100 2S balance charger module connected to a panel-mounted USB-C port on the outer shell.
 - **Sensors & Actuators:**
   - *Ultrasonic Distance Sensor:* RCWL-1601 (3.3V native) mounted on the front chest/head to measure user distance.
   - *Hopping Locomotion:* 1x central DC TT gear motor drives a shared double-crank axle. Left and right leg linkages are physically locked in phase to the axle, preventing tipping. The leg linkages act as rotary levers; when sweeping through the 90-degree vertical angle relative to the chassis, they execute a gentle downward shove against the ground, lifting the body 5–15 mm into a forward hop/scoot. MR85ZZ ball bearings at all pivot joints minimize friction, while TPU pads on the feet absorb landing shock.
   - *Active Steering:* An SG90 micro servo pivots a rear tail-skid or caster assembly left/right by +/-30 degrees to steer the robot dynamically during hopping.
-  - *Organic Expression Actuators:* 2x SG90 servos sweep the ears (drooped = sad, perked = happy/listening, neutral = idle); 1x SG90 servo opens and closes physical eyelids to reflect wakefulness, Wi-Fi searching (slow blink), and sleep state (fully closed). Status LEDs are completely omitted.
+  - *Organic Expression Actuators:* 2x SG90 servos sweep the ears (drooped = sad, perked = happy/listening, neutral = idle);
 - **Protection & Compatibility:** Logic connections between 3.3V MCU pins and 5V components use resistor dividers or 3.3V native modules. Decoupling capacitors (100 uF electrolytic + 0.1 uF ceramic) buffer voltage dips near the motor driver and servos. Datasheet reviews must verify pin mux assignments in MCUXpresso Config Tool, LPUART baud rate clocks, and ADC reference voltage calibration.
 
 ### 3.3 Pin Allocation Draft
@@ -273,7 +269,6 @@ Generic FRDM-MCXA153 capability only - exact pin requires board pinout and datas
 | Battery Sense | Rec | BATT_VSENSE | ADC Analog Input | Generic ADC Channel | <= 2.68 V | Input | Analog ADC | Verify 10k/4.7k resistor divider output does not exceed 3.3V at 8.4V max battery charge. |
 | Left Ear Servo | Core | SERVO_PWM_L | Timer PWM output (FTM/TPM) | Generic PWM Channel 0 | 3.3V Logic / 5V Power | Output | PWM (50 Hz) | Scope PWM pulse widths (1.0 - 2.0 ms) under load; confirm 20 ms period. |
 | Right Ear Servo | Core | SERVO_PWM_R | Timer PWM output (FTM/TPM) | Generic PWM Channel 1 | 3.3V Logic / 5V Power | Output | PWM (50 Hz) | Verify servo operates smoothly without causing MCU brownouts. |
-| Eyelid Servo | Core | SERVO_PWM_EYELID | Timer PWM output (FTM/TPM) | Generic PWM Channel 4 | 3.3V Logic / 5V Power | Output | PWM (50 Hz) | Verify PWM controls open (awake), slow blink (search), and closed (sleep) profiles cleanly. |
 | Steering Servo | Rec | SERVO_PWM_STEER | Timer PWM output (FTM/TPM) | Generic PWM Channel 5 | 3.3V Logic / 5V Power | Output | PWM (50 Hz) | Verify PWM controls rear tail-skid steering angle (+/-30 degrees) without binding. |
 | Motor Driver (TB6612) | Rec | MOTOR_PWM | Timer PWM output (FTM/TPM) | Generic PWM Channel 2 | 3.3 V | Output | PWM (10 kHz) | Verify speed modulation carrier frequency of central DC TT motor. |
 | Motor Driver (TB6612) | Rec | MOTOR_DIR1 | GPIO Output | Generic GPIO pin | 3.3 V | Output | GPIO | Check forward/reverse direction transitions. |
@@ -327,7 +322,6 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
   - `uart_comm.c`: LPUART driver, RX frame buffer, CRC checksum validation, and ACK packet transmission.
   - `motor_driver.c`: TB6612FNG H-bridge direction and PWM speed control for central DC TT motor.
   - `servo_ears.c`: PWM angle generation (50 Hz) for left and right ear expression servos.
-  - `eyelid_control.c`: PWM generation (50 Hz) for organic eyelid state feedback (awake, search blink, sleep closed).
   - `steering_control.c`: PWM angle control (50 Hz) for rear tail-skid steering servo (+/-30 degrees).
   - `ultrasonic.c`: Trigger pulse generation and Echo input capture for distance measurement.
   - `battery_adc.c`: ADC 12-bit voltage sampling and under-voltage threshold check (<6.4V).
@@ -336,18 +330,18 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
   2. Configure system clocks to 48 MHz core frequency.
   3. Initialize GPIO ports, enabling internal pull-ups for buttons and default low states for motor driver STBY.
   4. Initialize LPUART0 peripheral (115200 baud, 8-N-1) and enable RX interrupts.
-  5. Initialize FTM/TPM timers: TPM0 for motor PWM (10 kHz), TPM1 for ear, eyelid, and steering servos (50 Hz).
+  5. Initialize FTM/TPM timers: TPM0 for motor PWM (10 kHz), TPM1 for ear, and steering servos (50 Hz).
   6. Initialize ADC peripheral (12-bit) and calibrate battery voltage channel.
   7. Configure SysTick timer for 1 ms tick interrupts.
   8. Enable global interrupts.
-  9. Poll for ESP32 online handshake byte; upon receipt, sweep ears to neutral and fully open eyelids.
+  9. Poll for ESP32 online handshake byte; upon receipt, sweep ears to neutral.
 - **Main Loop / Task Flow (50 ms Loop):**
-  - *Task 1 (LPUART Frame Check):* Parse incoming bytes from ESP32. If CRC is valid, send ACK byte (`0x06`) and update ear/eyelid servo targets.
+  - *Task 1 (LPUART Frame Check):* Parse incoming bytes from ESP32. If CRC is valid, send ACK byte (`0x06`) and update ear servo targets.
   - *Task 2 (Distance Tracking & Motor Control):* Trigger ultrasonic pulse, capture Echo width, and calculate distance. If Echo hangs >250 ms, enter safe shutdown. If distance is valid, compute error against 30–50 cm target window, adjust central DC motor PWM duty cycle and rear steering angle.
-  - *Task 3 (Battery Check):* Sample battery ADC. If V < 6.4V, halt motor, droop ears, center steering, and close eyelids to sleep.
+  - *Task 3 (Battery Check):* Sample battery ADC. If V < 6.4V, halt motor, droop ears, center steering to sleep.
   - *Task 4 (Watchdog Feed):* Refresh coprocessor watchdog timer.
 - **Error Handling & Safe-State Strategy:**
-  If UART communication drops for >3.0 s, battery voltage falls <6.4V, ultrasonic Echo hangs >250 ms, or emergency stop is pressed, the MCU immediately transitions to `SAFE_SHUTDOWN`. Central motor PWM is forced to 0%, motor driver STBY is pulled low, steering servo is centered, ears are drooped, and eyelids are closed completely (organic sleep state).
+  If UART communication drops for >3.0 s, battery voltage falls <6.4V, ultrasonic Echo hangs >250 ms, or emergency stop is pressed, the MCU immediately transitions to `SAFE_SHUTDOWN`. Central motor PWM is forced to 0%, motor driver STBY is pulled low, steering servo is centered, ears are drooped.
 - **Configuration Constants:**
   - `BAUD_RATE`: 115200
   - `SERVO_PWM_FREQ_HZ`: 50
@@ -385,7 +379,6 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
       uint8_t cmd_type;     // 0x01 = Servo update, 0x02 = Mood, 0x03 = Status
       int8_t  ear_left_deg; // Angle 0 - 180
       int8_t  ear_right_deg;// Angle 0 - 180
-      uint8_t eyelid_state; // 0 = Closed, 1 = Open, 2 = Blink
       int8_t  steer_deg;    // Steering offset -30 to +30
       uint8_t crc8;         // Checksum
   } uart_payload_t;
@@ -399,7 +392,7 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 |---|---|---|---|---|---|
 | `FR-001` | Core | The system shall use the NXP FRDM-MCXA153 board as the main controller for low-level sensor-motor control and real-time execution. | Must | Inspection | BOM confirms MCXA153 handles low-level actuator drive and real-time loop tasks. |
 | `FR-002` | Core | The system shall use the ESP32-S3 Nano as the Wi-Fi, API, and audio parsing coprocessor. | Must | Inspection | Physical board layout includes the ESP32-S3 Nano connected to the MCXA153. |
-| `FR-003` | Core | Upon power-on, MCXA153 shall initialize GPIOs, LPUART, ADC, and PWM timers, sweep ears to neutral, and open eyelids to confirm awake state. | Must | Test | Debug port outputs boot diagnostics; eyelids open and ears sweep to neutral. |
+| `FR-003` | Core | Upon power-on, MCXA153 shall initialize GPIOs, LPUART, ADC, and PWM timers, sweep ears to neutral, | Must | Test | Debug port outputs boot diagnostics; ears sweep to neutral. |
 | `FR-004` | Core | The ESP32-S3 Nano shall perform a Wi-Fi handshake to connect to a local AP using credentials stored in NVS upon boot. | Must | Test | ESP32 logs show successful Wi-Fi connection using stored credentials. |
 | `FR-005` | Core | ESP32-S3 Nano shall make HTTPS requests to the cloud AI API, parse JSON response, and extract servo angles and mood parameters. | Must | Test | JSON parser extracts data correctly from simulated API responses. |
 | `FR-006` | Core | ESP32-S3 Nano shall directly parse and play back voice audio via I2S to MAX98357A DAC. No audio data shall be sent to MCXA153. | Must | Demo | Voice response is audible from speaker. Scope confirms no audio frames on UART link. |
@@ -408,35 +401,34 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 | `FR-009` | Rec | MCXA153 shall drive central DC TT motor via PWM (speed) and GPIO (direction) using TB6612FNG driver to actuate hopping double-crank axle. | Must | Test | PWM duty cycle and GPIO logic transition correctly matching motion commands. |
 | `FR-010` | Rec | MCXA153 shall measure user distance in cm by triggering ultrasonic sensor and timing Echo pulse via GPIO capture. | Must | Test | Distance values resolve accurately within 2 cm to 150 cm window (+/- 2 cm tolerance). |
 | `FR-011` | Rec | MCXA153 shall run a proportional control loop to drive central DC motor, keeping user within 30–50 cm window (AI Assumption). | Must | Demo | Robot hops forward when dist > 50cm, hops reverse when dist < 30cm, stops inside 30-50cm. |
-| `FR-012` | Rec | MCXA153 shall monitor battery voltage via ADC divider. If V < 6.4V, disable motor, droop ears, and close eyelids to sleep. | Must | Test | At V < 6.4V, motor stops, ears droop, and eyelids close completely. |
-| `FR-013` | Rec | Emergency stop button press shall force motor PWM to 0%, pull motor driver STBY low, center steering, and close eyelids to sleep. | Must | Test | Button press halts legs within 50 ms, centers steering, and closes eyelids. |
-| `FR-014` | Core | If UART comms with ESP32 drops > 3.0 s (AI Assumption), MCXA153 shall stop motor, center steering, and close eyelids to sleep. | Must | Test | Disconnecting UART wire forces motor stop, steering centering, and eyelid closure within 3.5s. |
+| `FR-012` | Rec | MCXA153 shall monitor battery voltage via ADC divider. If V < 6.4V, disable motor, droop ears to sleep. | Must | Test | At V < 6.4V, motor stops, ears droop,|
+| `FR-013` | Rec | Emergency stop button press shall force motor PWM to 0%, pull motor driver STBY low, center steering. | Must | Test | Button press halts legs within 50 ms, centers steering. |
+| `FR-014` | Core | If UART comms with ESP32 drops > 3.0 s (AI Assumption), MCXA153 shall stop motor, center steering to sleep. | Must | Test | Disconnecting UART wire forces motor stop, steering centering. |
 | `FR-015` | Rec | MCXA153 shall transmit a software ACK packet back to ESP32 upon successful receipt and CRC check of UART message. | Must | Test | ESP32 registers valid ACK byte within 100 ms of transmitting control frame. |
-| `FR-016` | Rec | If ultrasonic Echo hangs > 250 ms (AI Assumption), MCXA153 shall stop motor, center steering, droop ears, and close eyelids. | Must | Test | Disconnecting Echo pin triggers motor stop, steering center, and eyelid closure in <= 250 ms. |
+| `FR-016` | Rec | If ultrasonic Echo hangs > 250 ms (AI Assumption), MCXA153 shall stop motor, center steering, droop ears. | Must | Test | Disconnecting Echo pin triggers motor stop, steering center|
 | `FR-017` | Rec | If ESP32 fails Wi-Fi within 15s or setup button held 5s, launch setup AP portal to save new Wi-Fi credentials to NVS. | Must | Test | Setup AP launches, accepts web credentials, and successfully saves them to NVS. |
-| `FR-018` | Core | Holding setup button 10s at boot shall wipe all saved Wi-Fi credentials and tokens from NVS, close eyelids, and reboot. | Must | Test | Holding button 10s clears all stored credentials, verified by NVS check after reboot. |
+| `FR-018` | Core | Holding setup button 10s at boot shall wipe all saved Wi-Fi credentials and tokens from NVS, and reboot. | Must | Test | Holding button 10s clears all stored credentials, verified by NVS check after reboot. |
 | `FR-019` | Core | ESP32-S3 Nano shall generate a new random UUID session key upon boot/reset, preventing API conversation profile linking. | Must | Test | HTTP payloads show distinct, non-linked session UUIDs across boots and resets. |
 | `FR-020` | Core | System shall overwrite all conversation text buffers and audio memory in RAM with zeros immediately after TTS speech completes. | Must | Test | Memory inspection confirms response text is overwritten in RAM immediately post-speech. |
-| `FR-021` | Core | MCXA153 shall drive eyelid micro servo via 50 Hz PWM to open/close eyelids, conveying awake, searching, and sleep states. | Must | Demo | Eyelids open on boot, blink slowly during AP setup, and close fully on low battery or fault. |
-| `FR-022` | Rec | Mechanical leg linkages shall be driven by 1x central DC TT motor rotating a shared double-crank axle to lock left/right leg phase. | Must | Inspection | Both leg drive cranks are physically pinned and locked in phase to the same motor axle. |
-| `FR-023` | Rec | Power subsystem shall incorporate an onboard 2S balance charger connected to a USB-C shell port to charge battery without shell disassembly. | Must | Test | USB power delivery is negotiated; onboard charger balances and charges cells to 8.4V. |
-| `FR-024` | Rec | Outer 3D printed shell shall have a spacious design (~180x120x120 mm) with airflow grilles and magnetic quick-release latches. | Must | Inspection | Shell houses all components without wire pinching, provides vents, and opens toollessly. |
-| `FR-025` | Rec | MCXA153 shall actuate a steering micro servo (SG90) via 50 Hz PWM to pivot rear tail-skid +/-30 degrees for hopping turns. | Must | Test | Steering servo moves to target angles on command; tail-skid turns chassis dynamically. |
-| `FR-026` | Rec | Leg linkages shall sweep through 90 degrees vertical, executing a gentle downward kick that lifts body 5-15 mm for a stable hop. | Must | Test | Continuous motor rotation sweeps legs past 90 degrees, lifting chassis off floor during kick. |
+| `FR-021` | Rec | Mechanical leg linkages shall be driven by 1x central DC TT motor rotating a shared double-crank axle to lock left/right leg phase. | Must | Inspection | Both leg drive cranks are physically pinned and locked in phase to the same motor axle. |
+| `FR-022` | Rec | Power subsystem shall incorporate an onboard 2S balance charger connected to a USB-C shell port to charge battery without shell disassembly. | Must | Test | USB power delivery is negotiated; onboard charger balances and charges cells to 8.4V. |
+| `FR-023` | Rec | Outer 3D printed shell shall have a spacious design (~180x120x120 mm) with airflow grilles and magnetic quick-release latches. | Must | Inspection | Shell houses all components without wire pinching, provides vents, and opens toollessly. |
+| `FR-024` | Rec | MCXA153 shall actuate a steering micro servo (SG90) via 50 Hz PWM to pivot rear tail-skid +/-30 degrees for hopping turns. | Must | Test | Steering servo moves to target angles on command; tail-skid turns chassis dynamically. |
+| `FR-025` | Rec | Leg linkages shall sweep through 90 degrees vertical, executing a gentle downward kick that lifts body 5-15 mm for a stable hop. | Must | Test | Continuous motor rotation sweeps legs past 90 degrees, lifting chassis off floor during kick. |
 
 ### 4.5 Non-Functional Requirements Summary
 
 | ID | Tier | Category | Requirement | Metric / Threshold | Verification |
 |---|---|---|---|---|---|
-| `NFR-001` | Core | Safety / Electrical | All components connected to MCXA153 must be 3.3V logic compatible. Status feedback must not use LEDs. | GPIO V <= 3.3V; Current <= 4 mA/pin. Status conveyed via ear/eyelids organically. Zero LEDs. | Inspection / Scope measurement |
+| `NFR-001` | Core | Safety / Electrical | All components connected to MCXA153 must be 3.3V logic compatible. Status feedback must not use LEDs. | GPIO V <= 3.3V; Current <= 4 mA/pin. Status conveyed via ear organically. Zero LEDs. | Inspection / Scope measurement |
 | `NFR-002` | Core | Memory | Static RAM utilization of MCXA153 firmware must stay within MCU memory limits. | SRAM usage <= 28 KB (leaving 4 KB safety margin). (AI Assumption) | Compiler map file analysis (.map) |
 | `NFR-003` | Rec | Power Isolation | Power MCU/ESP32 logic and motor via independent voltage regulators from shared 2S battery pack. | Regulated 3.3V logic, regulated 5V/6V motor; 10k/4.7k divider scales ADC <= 2.68V. | Inspection / Voltmeter measurement |
 | `NFR-004` | Rec | Mechanical Filaments | Structural mounts and leg links printed strictly in PETG; joints use MR85ZZ bearings; feet use TPU. | Links: PETG; Feet: TPU; Shell: PLA; Bearings: MR85ZZ at all pivot pins. | Physical inspection / Filament spec audit |
 | `NFR-005` | Rec | Timing | Motor control user-following loop must run at a deterministic periodic rate to prevent lag. | Control loop period 50 ms +/- 5 ms. (AI Assumption) | Test (GPIO toggle & logic analyzer trace) |
-| `NFR-006` | Rec | Safety | If distance sensor readings hang or fail, system must immediately disable motor and close eyelids. | Stop motor and close eyelids within <= 100 ms of invalid sensor reading. (AI Assumption) | Test (pulling sensor pin / simulating fault) |
+| `NFR-006` | Rec | Safety | If distance sensor readings hang or fail, system must immediately disable motor. | Stop motor  <= 100 ms of invalid sensor reading. (AI Assumption) | Test (pulling sensor pin / simulating fault) |
 | `NFR-007` | Core | Wi-Fi Connection | ESP32 shall establish Wi-Fi link within a defined startup window before indicating search state. | Wi-Fi handshake timeout <= 15 seconds. (AI Assumption) | Test (forcing connection failures & timing) |
 | `NFR-008` | Core | Privacy / Security | System shall encrypt all API network transactions to prevent conversation eavesdropping. | Enforce TLS 1.2 or higher for all HTTPS calls from ESP32. | Wireshark network packet sniffing |
-| `NFR-009` | Advanced | Privacy / Security | Microphone must not record passively; active recording must require physical trigger button. | Recording starts only on button press. Active state shown via ear/eyelid gestures (No LEDs). | Demonstration / Functional audit |
+| `NFR-009` | Advanced | Privacy / Security | Microphone must not record passively; active recording must require physical trigger button. | Recording starts only on button press. Active state shown via ear gesture (No LEDs). | Demonstration / Functional audit |
 | `NFR-010` | Rec | Battery Safety | Battery power circuit must include an integrated 2S BMS board enforcing safety protection boundaries. | Cell overcharge 4.25V; over-discharge cutoff 3.0V (6.0V pack); overcurrent >= 4A. | Short-circuit & load test verification |
 | `NFR-011` | Rec | CAD Sourcing & Timeline | Sourcing pre-designed STL/STEP models is highly recommended. Limit CAD design to max 1 week. | CAD learning & design phase <= 1 week of 7-week timeline. 100% files sourced/done. | Audit of file availability & project log |
 
@@ -445,21 +437,21 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 | Test ID | Requirement | Tier | Test Type | Expected Result | Evidence |
 |---|---|---|---|---|---|
 | `TC-001` | `FR-001` | Core | Inspection | Target controller is confirmed as NXP FRDM-MCXA153. Secondary coprocessors allowed. | Physical board photo & BOM inspection. |
-| `TC-002` | `FR-003`, `FR-021` | Core | Test | Apply power; MCU boots, prints init log to serial console, and opens eyelids within 1.0 s. | Diagnostic console log & video of eyelid open. |
+| `TC-002` | `FR-003`, `FR-021` | Core | Test | Apply power; MCU boots, prints init log to serial console. | Diagnostic console log & video. |
 | `TC-003` | `FR-007` | Core | Test | Connect ESP32 and MCXA153 UART lines; send test frames for 5 minutes. | Zero byte corruption / framing errors. Logic analyzer capture. |
 | `TC-004` | `FR-005` | Core | Test | Send mock JSON payload to ESP32; monitor parser output. | JSON parser extracts servo angles and mood variables correctly. ESP32 serial logs. |
 | `TC-005` | `FR-006` | Core | Test | Trigger audio playback on ESP32 connected to MAX98357A DAC. | DAC receives direct digital I2S frames and drives speaker smoothly. Audio waveform trace. |
 | `TC-006` | `FR-006` | Core | Demo | Stream voice response to ESP32; measure audio loudness. | Voice response is clearly audible (sound level >= 70 dBA at 1 meter). Audio recording. |
-| `TC-007` | `FR-014`, `FR-021` | Core | Test | Disconnect LPUART RX wire from MCXA153 during operation. | Motor stops, steering centers, and eyelids close completely within 3.5 seconds. Timing capture log / video check. |
+| `TC-007` | `FR-014`, `FR-021` | Core | Test | Disconnect LPUART RX wire from MCXA153 during operation. | Motor stops, steering centers,. Timing capture log / video check. |
 | `TC-008` | `FR-009` | Rec | Test | Suspend chassis; inject forward drive commands to central DC motor. | Motor spins; double-crank axle rotates smoothly without binding (current <= 300 mA). Current measurement log. |
 | `TC-009` | `FR-010` | Rec | Test | Place obstacle at 50 cm distance from ultrasonic sensor. | Calculated distance displays as 50 cm +/- 2 cm. Tape measure vs debug log comparison. |
 | `TC-010` | `FR-011`, `FR-022`, `FR-025` | Rec | Demo | Place robot on floor; move obstacle to 80cm then 20cm; send turn command. | Robot hops forward, steers tail-skid left/right, and maintains 30-50 cm window. Video of hopping turns. |
 | `TC-011` | `FR-008` | Core | Demo | Send servo angle command for 45 degrees (drooped ears). | Ear servos sweep to 45 degrees; PWM pulse width measures 1.25 ms. Scope pulse width trace. |
-| `TC-012` | `FR-012`, `FR-021` | Rec | Test | Drop battery source voltage below 6.4 V. | Motor disables immediately, ears droop, steering centers, and eyelids close. Multimeter check & video log. |
-| `TC-013` | `FR-013`, `FR-021` | Rec | Test | Actuate motors at full speed; press Emergency Stop button. | DC motor PWM drops to 0%, steering centers, and eyelids close in <= 50 ms. Logic analyzer capture / video. |
+| `TC-012` | `FR-012`, `FR-021` | Rec | Test | Drop battery source voltage below 6.4 V. | Motor disables immediately, ears droop, steering centers,. Multimeter check & video log. |
+| `TC-013` | `FR-013`, `FR-021` | Rec | Test | Actuate motors at full speed; press Emergency Stop button. | DC motor PWM drops to 0%, steering centers <= 50 ms. Logic analyzer capture / video. |
 | `TC-014` | `FR-015` | Rec | Test | Send UART packet from ESP32 to MCXA153; measure time to receive ACK. | MCXA153 returns ACK byte (`0x06`); ESP32 receives it in <= 100 ms. Logic analyzer trace. |
-| `TC-015` | `FR-016`, `FR-021` | Rec | Test | Cut ultrasonic sensor Echo wire while robot is moving. | Safe shutdown task halts motor, centers steering, and closes eyelids within 250 ms. Debug log showing halt time. |
-| `TC-016` | `FR-017`, `FR-021` | Rec | Test | Force Wi-Fi connection failure; submit credentials via setup AP portal. | Eyelids blink slowly during search; setup portal saves keys to NVS; eyelids open wide on connect. NVS dump & connection logs. |
+| `TC-015` | `FR-016`, `FR-021` | Rec | Test | Cut ultrasonic sensor Echo wire while robot is moving. | Safe shutdown task halts motor, centers steering. Debug log showing halt time. |
+| `TC-016` | `FR-017`, `FR-021` | Rec | Test | Force Wi-Fi connection failure; submit credentials via setup AP portal. | setup portal saves keys to NVS; NVS dump & connection logs. |
 | `TC-017` | `FR-018` | Core | Test | Hold setup button for 10 seconds at boot; inspect NVS memory. | Stored Wi-Fi keys and session caches are formatted/erased. NVS check post-reboot. |
 | `TC-018` | `FR-020` | Core | Test | Complete TTS voice response; inspect ESP32 RAM buffers post-speech. | RAM memory addresses for text strings contain `0x00` zero-fill. Memory debugger dump. |
 | `TC-019` | `FR-023` | Rec | Test | Connect 5V USB-C source to shell port with depleted battery (V < 7.0V). | Onboard balance charger negotiates power, balances cells, and stops at 8.4V +/- 0.05V. Charger status log / Voltmeter. |
@@ -474,14 +466,13 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 | `US-002` (Wi-Fi Portability) | `FR-002`, `FR-004`, `FR-017`, `NFR-007` | `TC-016` | AP setup portal screenshots & connection logs | None |
 | `US-003` (Data Wiping & Privacy) | `FR-018`, `FR-020` | `TC-017`, `TC-018` | NVS post-wipe state check & RAM zero-fill debugger dump | None |
 | `US-004` (Encrypted Comm) | `FR-019`, `NFR-008` | Network Sniffing Check | Wireshark TLS 1.2 validation & HTTP UUID capture | None |
-| `US-005` (Organic Eyelid Feedback) | `FR-003`, `FR-008`, `FR-012`, `FR-013`, `FR-014`, `FR-016`, `FR-021`, `NFR-009` | `TC-002`, `TC-007`, `TC-011`, `TC-012`, `TC-013`, `TC-015` | Scope pulse width traces & video of mechanical eyelids | None |
-| `US-006` (Power Isolation) | `FR-012`, `NFR-003` | `TC-012` | Schematic review, ADC calibration log, voltmeter check | None |
-| `US-007` (Hopping Leg System) | `FR-009`, `FR-011`, `FR-022`, `NFR-004` | `TC-008`, `TC-010` | Video of forward/reverse hopping & double-crank drawing | None |
-| `US-008` (Filaments & Bearings) | `NFR-004` | Inspection Check | Physical inspection of PETG/TPU prints & bearing assembly photo | None |
-| `US-009` (Spacious Shell & Charger) | `FR-023`, `FR-024`, `NFR-010` | `TC-019`, Inspection | Charging current profile log, cell balance check, shell measurement | None |
-| `US-010` (CAD Sourcing Time Limit) | `NFR-011` | Audit Check | Verify STL files exist & project log shows <= 1 week on CAD | None |
-| `US-011` (Active Steering Turns) | `FR-025` | `TC-020` | Tail-skid linkage clearance check & video of motion turns | None |
-| `US-013` (90-Degree Kick Locomotion) | `FR-026` | `TC-021` | Slow-motion video verifying 5-15 mm ground clearance lift | None |
+| `US-005` (Power Isolation) | `FR-012`, `NFR-003` | `TC-012` | Schematic review, ADC calibration log, voltmeter check | None |
+| `US-006` (Hopping Leg System) | `FR-009`, `FR-011`, `FR-022`, `NFR-004` | `TC-008`, `TC-010` | Video of forward/reverse hopping & double-crank drawing | None |
+| `US-007` (Filaments & Bearings) | `NFR-004` | Inspection Check | Physical inspection of PETG/TPU prints & bearing assembly photo | None |
+| `US-008` (Spacious Shell & Charger) | `FR-023`, `FR-024`, `NFR-010` | `TC-019`, Inspection | Charging current profile log, cell balance check, shell measurement | None |
+| `US-009` (CAD Sourcing Time Limit) | `NFR-011` | Audit Check | Verify STL files exist & project log shows <= 1 week on CAD | None |
+| `US-010` (Active Steering Turns) | `FR-025` | `TC-020` | Tail-skid linkage clearance check & video of motion turns | None |
+| `US-011` (90-Degree Kick Locomotion) | `FR-026` | `TC-021` | Slow-motion video verifying 5-15 mm ground clearance lift | None |
 
 ---
 
@@ -490,7 +481,7 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 | ID | Category | Tier Affected | Severity | Probability | Impact | Mitigation | Human Approval Required |
 |---|---|---|---|---|---|---|---|
 | `R-001` | Voltage / Power | Recommended | Low | Low | MCU brownout / reset when central DC motor starts | Separate independent regulators power MCU logic and motor path; decoupling capacitors placed near driver | No |
-| `R-002` | Safety | Recommended | Medium | Low | Motor running indefinitely if ultrasonic sensor Echo hangs | Software 250 ms watchdog task (`FR-016`) halts motor, centers steering, droops ears, and closes eyelids | No |
+| `R-002` | Safety | Recommended | Medium | Low | Motor running indefinitely if ultrasonic sensor Echo hangs | Software 250 ms watchdog task (`FR-016`) halts motor, centers steering, droops ears | No |
 | `R-003` | Mechanical Linkages | Recommended | High | Low | Brittle linkage joints fracturing under hopping ground impact | Leg linkages and structural mounts printed strictly in PETG (`NFR-004`); feet use TPU damping pads | No |
 | `R-004` | Electrical | Recommended | Low | Medium | High motor current noise causing UART packet corruption | Implemented software ACK confirmation protocol (`FR-015`) to verify message delivery before next dispatch | No |
 | `R-005` | Electrical | Core / Rec | High | Low | Connecting 5V sensor outputs directly to 3.3V MCU inputs damaging silicon | Native 3.3V modules used (RCWL-1601), or 10k/4.7k resistor voltage dividers inserted on feedback signals | No |
@@ -511,7 +502,7 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 
 - The project represents a Mechanized Bunny that has conversations with a human.
 - The bunny physically follows the user using distance sensors.
-- The bunny mimics emotional expressions based on conversation mood using physical ear sweeps and organic eyelid movements.
+- The bunny mimics emotional expressions based on conversation mood using physical ear sweeps.
 - The bunny retrieves answers and mood data from a Cloud AI API endpoint.
 - The target hardware suite is fixed: **NXP FRDM-MCXA153 board** as the main controller, and an **ESP32 coprocessor suite (ESP32-S3 Nano)** for Wi-Fi connectivity.
 - Dual-processor architecture is permitted: MCXA153 manages low-level motor/servo timing and sensors; ESP32-S3 Nano manages Wi-Fi, HTTPS REST API, JSON parsing, and I2S audio rendering.
@@ -519,7 +510,7 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 - Structural mounts, crank arms, and leg linkages must be printed strictly in **PETG** filament; landing pads use **TPU**; body shell uses **PLA**.
 - A software UART acknowledgment (ACK) protocol (`0x06`) is used to confirm command delivery.
 - Logic interface matching uses resistor voltage dividers or native 3.3V modules.
-- Status LEDs are completely excluded; state feedback (awake, searching, sleeping, low battery) is conveyed organically via physical eyelid servo positions and ear sweeps.
+- Status LEDs are completely excluded; state feedback (awake, searching, sleeping, low battery) is conveyed organically via physical ear sweeps.
 - Locomotion is achieved by a hopping leg linkage driven by **1x central high-torque DC gear motor** rotating a shared double-crank axle to lock leg phase.
 - Locomotion utilizes a 90-degree rotary leg kick generating a gentle, low-amplitude hop (5 to 15 mm lift).
 - Active steering is achieved via an SG90 micro servo pivoting a rear tail-skid assembly (+/-30 degrees).
@@ -534,7 +525,7 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 - `A-003` (Coprocessor Division of Labor): ESP32-S3 Nano handles networking, SSL/TLS, API parsing, and direct I2S audio rendering; MCXA153 handles PWM motor/servos, ultrasonic timing, and battery ADC.
 - `A1-001` (User Distance Thresholds): Target distance for user tracking is set to a 30–50 cm window.
 - `A1-002` (Control Loop Period): The DC motor speed update control loop runs periodically every 50 ms.
-- `A1-003` (Servo PWM Frequency): PWM control signals for ear, eyelid, and steering servos run at 50 Hz (20 ms period).
+- `A1-003` (Servo PWM Frequency): PWM control signals for ear and steering servos run at 50 Hz (20 ms period).
 - `A1-004` (UART Configuration): LPUART link operates at 115200 baud, 8-N-1 formatting.
 - `A1-005` (Battery ADC Scaling): 2S LiPo battery (8.4V max) is scaled down using a 10k / 4.7k resistor divider, delivering <= 2.68V to the ADC.
 - `A1-006` (Spacious Shell Envelope): Outer shell dimensions are set to approximately 180 mm (L) x 120 mm (W) x 120 mm (H).
@@ -691,5 +682,5 @@ TODO: Add links or attach:
 - The project documentation draft cleanly integrates all Agent 0 scoping intent and Agent 1 engineering requirements into a structured, DokuWiki-aligned Markdown template.
 - Mandatory hardware platform constraints (NXP FRDM-MCXA153 MCU board) and secondary coprocessor assignments (ESP32-S3 Nano) are strictly preserved and validated.
 - All functional requirements, non-functional requirements, test plan cases, traceability matrix entries, and risk register items are completely detailed without missing tables.
-- Organic status feedback (servo eyelids and ear sweeps without status LEDs), hopping double-crank locomotion with 90-degree rotary kicks, active rear steering tail-skid, onboard USB-C 2S balance charging, and privacy data-wiping mechanisms are fully incorporated.
+- Organic status feedback (servo ear sweeps without status LEDs), hopping double-crank locomotion with 90-degree rotary kicks, active rear steering tail-skid, onboard USB-C 2S balance charging, and privacy data-wiping mechanisms are fully incorporated.
 - Clear `TODO` placeholders and a Human Review Checklist are provided for student implementation and instructor sign-off.
