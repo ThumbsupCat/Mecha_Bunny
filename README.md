@@ -553,23 +553,22 @@ If development tools are unresolved, consult: `TODO: Confirm exact development e
 
 ## 7. Human Review Checklist
 
-- [ ] Scope approved
-- [ ] Selected feature tier approved (Recommended Summer School Version)
-- [ ] FRDM-MCXA153 confirmed as mandatory target board for low-level control
-- [ ] FRDM-MCXA153 pinout and LPUART / PWM peripheral assignments checked
-- [ ] Voltage compatibility checked (3.3V logic boundaries enforced; zero 5V directly to MCU)
-- [ ] Current limits checked (motor and servos powered from dedicated 5V/6V regulator rail)
-- [ ] Power budget checked (2S LiPo battery, 2S BMS cutoff at 6.0V, 10k/4.7k ADC divider)
-- [ ] External modules checked (RCWL-1601 ultrasonic, MAX98357A DAC, TB6612FNG driver)
-- [ ] Advanced components approved or removed (Voice mic & camera reserved for Advanced tier)
-- [ ] Sensor/actuator interfaces confirmed (Ultrasonic capture, 4x PWM servos, H-bridge DC motor)
-- [ ] Firmware architecture approved (Dual-processor asynchronous superloop with UART ACK check)
-- [ ] Timing and memory constraints reviewed (50 ms loop period, SRAM usage <= 28 KB)
-- [ ] Test plan reviewed (TC-001 through TC-021 linked to Must requirements)
-- [ ] Traceability reviewed (All user stories mapped to system requirements and test cases)
-- [ ] Safety/privacy/security risks reviewed (TLS encryption, 10s button NVS wipe, RAM zero-fill)
-- [ ] AI assumptions accepted or rejected (30-50 cm window, 6.4V low battery cutoff, 50 ms loop)
-- [ ] Implementation allowed to start
+- [ x] Scope approved
+- [ x] Selected feature tier approved (Recommended Summer School Version)
+- [ x] FRDM-MCXA153 confirmed as mandatory target board for low-level control
+- [ x] FRDM-MCXA153 pinout and LPUART / PWM peripheral assignments checked
+- [ x] Voltage compatibility checked (3.3V logic boundaries enforced; zero 5V directly to MCU)
+- [ x] Current limits checked (motor and servos powered from dedicated 5V/6V regulator rail)
+- [ x] Power budget checked (2S LiPo battery, 2S BMS cutoff at 6.0V, 10k/4.7k ADC divider)
+- [ x] External modules checked (RCWL-1601 ultrasonic, MAX98357A DAC, TB6612FNG driver)
+- [ x] Advanced components approved or removed (Voice mic & camera reserved for Advanced tier)
+- [ x] Sensor/actuator interfaces confirmed (Ultrasonic capture, 4x PWM servos, H-bridge DC motor)
+- [ x] Firmware architecture approved (Dual-processor asynchronous superloop with UART ACK check)
+- [ x] Timing and memory constraints reviewed (50 ms loop period, SRAM usage <= 28 KB)
+- [ x] Test plan reviewed (TC-001 through TC-021 linked to Must requirements)
+- [ x] Traceability reviewed (All user stories mapped to system requirements and test cases)
+- [ x] Safety/privacy/security risks reviewed (TLS encryption, 10s button NVS wipe, RAM zero-fill)
+- [ x] Implementation allowed to start
 
 ---
 
@@ -587,6 +586,32 @@ Describe:
 - demo observations;
 - limitations.
 ```
+
+What was implemented:
+  - MCXA153 motor test
+  - ESP32-S3 Nano Microphone STT and outputing on Serial Monitor
+  - UART communication between the MCXA153 and ESP32-S3 Nano by using a sample json
+
+What works:
+  - All the motors set on 35% duty cycle and being able to run over small carpets as well
+  - Microphone recording clear voice samples
+  - UART assures an acceptable speed for the type of data I want to communicate
+
+What does not work yet:
+  - The project requires merging all test suites
+  - Servo motor data pins not set in stone
+  - The ESP32 S3 needs to send the transcript to an LLM and receive the instructions for the MCXA and am answer to the user's phrase.
+  - The MCXA needs to be able to translate the JSON data into actual movement.
+
+Test Results:
+  - SPIFFS not a dependable tool for this kind of task, decided to go for the PSRAM approach that is suitable for holding
+audio samples or images without the need to write them on the disk
+  - The motors are ready to be used with ease in the following translation
+  - Microphone quality is perfect for this scope, by using the I2S_PHILIPS_SLOT_CONFIG
+
+Limitations:
+  - The bunny can't handle directly orders from the person if the sound comes from the front of it, only left and right. The front and back
+can be handled by asking the user on which side the voice comes from.
 
 ---
 
